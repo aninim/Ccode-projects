@@ -1,0 +1,12 @@
+# Claude local settings
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+
+# VS Code
+.vscode/
