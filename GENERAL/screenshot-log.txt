@@ -1,0 +1,36 @@
+Server: http://127.0.0.1:52954
+
+── Capturing screenshots ──
+  ✓ ss_01_topbar_kpi.png
+  ✓ ss_02_subjects_vehicle_donuts.png
+  ✓ ss_03_gender_donut.png
+  ✓ ss_04_skintone_donut.png
+  ✓ ss_05_car_type_donut.png
+  ✓ ss_06_scatter.png
+  ✓ ss_07_bmi_hist.png
+  ✓ ss_08_mini_row.png
+  ✓ ss_09_age_hist.png
+  ✓ ss_10_height_hist.png
+  ✓ ss_11_weight_hist.png
+  ✓ ss_12_drill_grid.png
+  ✓ ss_13_crs_type.png
+  ✓ ss_14_crs_orient.png
+  ✓ ss_15_oop.png
+  ✓ ss_16_sbm.png
+  ✓ ss_17_fullpage.png
+
+── JS Error Report ──
+  No errors detected ✓
+
+── Animation Class Audit ──
+  [gender] coverage=80.6% → none
+  [skintone] coverage=66.7% → anim-warning
+  [bmi] coverage=74.1% → anim-warning
+  [age] coverage=44.4% → anim-critical
+  [height] coverage=91.7% → none
+
+── Needle Dials: 7 rendered ──
+
+── Section Header Sweep: 4 headers animated ──
+
+Done. Screenshots saved to GENERAL/

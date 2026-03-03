@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #0c0e14;
+            --bg-panel: #12151e;
+            --bg-card: #181c28;
+            --bg-card-hover: #1e2333;
+            --bg-input: #1a1e2a;
+            --border-subtle: rgba(255,255,255,0.06);
+            --border-medium: rgba(255,255,255,0.1);
+            --text-primary: #e8eaf0;
+            --text-secondary: #8b90a0;
+            --text-muted: #585d70;
+            --accent: #d4a55a;
+            --accent-dim: rgba(212,165,90,0.15);
+            --accent-glow: rgba(212,165,90,0.25);
+            --green: #3ecf8e;
+            --green-dim: rgba(62,207,142,0.12);
+            --red: #f06868;
+            --red-dim: rgba(240,104,104,0.12);
+            --amber: #e8b84a;
+            --amber-dim: rgba(232,184,74,0.12);
+            --chart-blue: #5b8def;
+            --chart-teal: #4ecdc4;
+            --chart-coral: #f08080;
+            --chart-violet: #a78bfa;
+            --topbar-h: 52px;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+        }
+
+        *, *::before, *::after {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
+        html { font-size: 15px; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ─── Top Filter Bar ─── */
+        .topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--topbar-h);
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border-subtle);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 20px;
+        }
+
+        .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            margin-right: 8px;
+        }
+
+        .topbar-logo-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, var(--accent), #c4863a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topbar-logo-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--bg-deep);
+        }
+
+        .topbar-logo-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border-subtle);
+            flex-shrink: 0;
+        }
+
+        /* Horizontal filter groups inside top bar */
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .filter-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .filter-group select,
+        .filter-group input[type="date"] {
+            padding: 5px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .filter-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238b90a0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            padding-right: 26px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input[type="date"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+
+        .filter-group select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.6);
+            cursor: pointer;
+        }
+
+        /* Date range: two inputs side-by-side */
+        .date-range-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .date-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .date-input-wrapper span {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .topbar-updated {
+            margin-left: auto;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .topbar-updated span {
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+        }
+
+        /* ─── Main Content ─── */
+        .main-content {
+            margin-top: var(--topbar-h);
+            flex: 1;
+            padding: 20px 24px 32px;
+            max-width: 100vw;
+            min-height: 100vh;
+        }
+
+        /* ─── Header ─── */
+        .dashboard-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .dashboard-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .dashboard-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(212,165,90,0.2);
+            border-radius: 20px;
+            font-size: 0.73rem;
+            font-weight: 500;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .header-badge .pulse {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ─── Loading ─── */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 50vh;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-medium);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ─── KPI Cards ─── */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.25s, transform 0.2s;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .kpi-card:hover {
+            border-color: var(--border-medium);
+            transform: translateY(-1px);
+        }
+
+        .kpi-card:hover::before {
+            opacity: 1;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .kpi-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .kpi-delta {
+            font-size: 0.73rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .kpi-delta.red {
+            color: var(--red);
+            background: var(--red-dim);
+        }
+
+        .kpi-delta.neutral {
+            color: var(--amber);
+            background: var(--amber-dim);
+        }
+
+        .kpi-delta.green {
+            color: var(--green);
+            background: var(--green-dim);
+        }
+
+        /* ─── Sections ─── */
+        .section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            margin-bottom: 12px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-icon.car { background: rgba(91,141,239,0.12); }
+        .section-icon.car svg { fill: var(--chart-blue); }
+        .section-icon.subjects { background: rgba(78,205,196,0.12); }
+        .section-icon.subjects svg { fill: var(--chart-teal); }
+        .section-icon.features { background: rgba(167,139,250,0.12); }
+        .section-icon.features svg { fill: var(--chart-violet); }
+        .section-icon.drill { background: var(--accent-dim); }
+        .section-icon.drill svg { fill: var(--accent); }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 8px 0;
+        }
+
+        /* ─── Charts ─── */
+        .chart-container {
+            min-height: 380px;
+            margin-bottom: 16px;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .no-data {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 280px;
+            color: var(--text-muted);
+            font-size: 0.87rem;
+            gap: 8px;
+        }
+
+        .no-data::before {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 2px dashed var(--border-medium);
+            border-radius: 50%;
+        }
+
+        /* ─── Gender Score (inline) ─── */
+        .gender-score-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .gender-score-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 18px 24px;
+            flex: 0 0 auto;
+            min-width: 220px;
+        }
+
+        /* ─── Tabs ─── */
+        .tabs {
+            display: flex;
+            gap: 2px;
+            background: var(--bg-panel);
+            border-radius: var(--radius-sm);
+            padding: 3px;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+
+        .tab {
+            padding: 9px 22px;
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .tab.active {
+            color: var(--accent);
+            background: var(--bg-card);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Stagger load animation ─── */
+        .stagger {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: staggerIn 0.5s ease forwards;
+        }
+
+        @keyframes staggerIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stagger:nth-child(1) { animation-delay: 0.05s; }
+        .stagger:nth-child(2) { animation-delay: 0.1s; }
+        .stagger:nth-child(3) { animation-delay: 0.15s; }
+        .stagger:nth-child(4) { animation-delay: 0.2s; }
+        .stagger:nth-child(5) { animation-delay: 0.25s; }
+        .stagger:nth-child(6) { animation-delay: 0.3s; }
+        .stagger:nth-child(7) { animation-delay: 0.35s; }
+        .stagger:nth-child(8) { animation-delay: 0.4s; }
+
+        /* ─── §9 Animation Layer ─── */
+        @keyframes pulse-critical {
+            0%   { box-shadow: 0 0 0px rgba(240, 104, 104, 0); }
+            50%  { box-shadow: 0 0 14px 3px rgba(240, 104, 104, 0.45); }
+            100% { box-shadow: 0 0 0px rgba(240, 104, 104, 0); }
+        }
+        @keyframes pulse-warning {
+            0%   { box-shadow: 0 0 0px rgba(232, 184, 74, 0); }
+            50%  { box-shadow: 0 0 12px 2px rgba(232, 184, 74, 0.38); }
+            100% { box-shadow: 0 0 0px rgba(232, 184, 74, 0); }
+        }
+        @keyframes breathe-gold {
+            0%   { opacity: 0.4; }
+            50%  { opacity: 1.0; }
+            100% { opacity: 0.4; }
+        }
+        @keyframes border-sweep {
+            from { background-size: 0% 100%; }
+            to   { background-size: 100% 100%; }
+        }
+        .anim-critical {
+            animation: pulse-critical 2.2s ease-in-out infinite;
+            border: 1px solid rgba(240, 104, 104, 0.4) !important;
+        }
+        .anim-warning {
+            animation: pulse-warning 2.8s ease-in-out infinite;
+            border: 1px solid rgba(232, 184, 74, 0.35) !important;
+        }
+        .section-header-animate::before {
+            content: '';
+            display: block;
+            height: 2px;
+            background: linear-gradient(90deg, #5b8def, #3ecf8e);
+            background-size: 0% 100%;
+            background-repeat: no-repeat;
+            animation: border-sweep 0.9s ease-out forwards;
+            margin-bottom: 6px;
+        }
+        .target-line-breathe {
+            animation: breathe-gold 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* ─── §12.1 Subjects & Vehicle Overview ─── */
+        .subjects-vehicle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .chart-wrapper { min-width: 0; }
+
+        .chart-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+        .car-type-score-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 18px 24px;
+        }
+
+        /* ─── §12.4 Feature Drill Down Grid ─── */
+        .feature-drill-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-drill-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 12px;
+            padding: 16px 18px 12px;
+            position: relative;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 1400px) {
+            .kpi-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .chart-row { grid-template-columns: 1fr; }
+            .subjects-vehicle-grid { grid-template-columns: 1fr 1fr; }
+            .feature-drill-grid { grid-template-columns: 1fr; }
+            .chart-row-3 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 900px) {
+            .topbar { gap: 10px; padding: 0 12px; flex-wrap: wrap; height: auto; min-height: var(--topbar-h); }
+            .main-content { padding: 16px 12px 24px; }
+            .kpi-container { grid-template-columns: repeat(2, 1fr); }
+            .subjects-vehicle-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ─── Top Filter Bar ─── -->
+    <nav class="topbar">
+        <div class="topbar-logo">
+            <div class="topbar-logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <span class="topbar-logo-text">GTI Dashboard</span>
+        </div>
+        <div class="topbar-divider"></div>
+
+        <div class="filter-group">
+            <label class="filter-label" for="project-filter">Project</label>
+            <select id="project-filter">
+                <option value="All">All Projects</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label" for="feature-filter">Feature</label>
+            <select id="feature-filter">
+                <option value="All">All Features</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label" for="usage-filter">Usage</label>
+            <select id="usage-filter">
+                <option value="All">All Usage Types</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Date</label>
+            <div class="date-range-group">
+                <div class="date-input-wrapper">
+                    <span>From</span>
+                    <input type="date" id="start-date">
+                </div>
+                <div class="date-input-wrapper">
+                    <span>To</span>
+                    <input type="date" id="end-date">
+                </div>
+            </div>
+        </div>
+
+        <div class="topbar-updated">Updated <span id="last-updated">--</span></div>
+    </nav>
+
+    <!-- ─── Main ─── -->
+    <main class="main-content">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Data Collection Dashboard</h1>
+                <p class="dashboard-subtitle">Real-time overview of collection campaigns and driver analytics</p>
+            </div>
+            <div class="header-badge">
+                <div class="pulse"></div>
+                <span id="record-count">--</span> records
+            </div>
+        </div>
+
+        <div id="loading" class="loading-container">
+            <div class="spinner"></div>
+            <div class="loading-text">Loading dashboard data...</div>
+        </div>
+
+        <div id="dashboard-content" style="display: none;">
+
+            <!-- KPI Cards -->
+            <div class="kpi-container">
+                <div class="kpi-card stagger">
+                    <div class="kpi-label">Collection Days</div>
+                    <div class="kpi-value" id="kpi-days">0</div>
+                </div>
+                <div class="kpi-card stagger">
+                    <div class="kpi-label">Total DAT Files</div>
+                    <div class="kpi-value" id="kpi-files">0</div>
+                </div>
+                <div class="kpi-card stagger">
+                    <div class="kpi-label">Total Hours</div>
+                    <div class="kpi-value" id="kpi-hours">0</div>
+                </div>
+                <div class="kpi-card stagger">
+                    <div class="kpi-label">Total TB</div>
+                    <div class="kpi-value" id="kpi-tb">0</div>
+                </div>
+                <div class="kpi-card stagger">
+                    <div class="kpi-label">Total Drivers</div>
+                    <div class="kpi-value" id="kpi-drivers">0</div>
+                    <div class="kpi-delta" id="kpi-drivers-delta"></div>
+                </div>
+            </div>
+
+            <!-- §12.1 Subjects & Vehicle Overview (merged) -->
+            <div class="section stagger">
+                <div class="section-header">
+                    <div class="section-icon subjects">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <h2 class="section-title">Subjects &amp; Vehicle Overview</h2>
+                </div>
+
+                <!-- Score cards row: gender | skintone | car -->
+                <div class="subjects-vehicle-grid">
+                    <div class="gender-score-card" data-kpi-id="gender">
+                        <div class="kpi-label">Gender Balance Score</div>
+                        <div class="kpi-value" id="gender-score">0.00</div>
+                        <div class="kpi-delta" id="gender-score-delta"></div>
+                        <div style="margin-top:8px;font-size:0.7rem;color:var(--text-muted);">Spec: ≥40% each</div>
+                        <div style="display:flex;gap:6px;margin-top:4px;">
+                            <span class="kpi-delta" id="gender-female-badge">F —</span>
+                            <span class="kpi-delta" id="gender-male-badge">M —</span>
+                        </div>
+                    </div>
+                    <div class="gender-score-card" data-kpi-id="skintone">
+                        <div class="kpi-label">Skin Tone Coverage</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:8px;">Spec: Light ≥20% · Med ≥40% · Dark ≥20%</div>
+                        <div style="display:flex;flex-direction:column;gap:5px;">
+                            <div class="kpi-delta" id="skin-light-badge">Light —</div>
+                            <div class="kpi-delta" id="skin-medium-badge">Medium —</div>
+                            <div class="kpi-delta" id="skin-dark-badge">Dark —</div>
+                        </div>
+                    </div>
+                    <div class="car-type-score-card">
+                        <div class="kpi-label">Vehicle Distribution</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:8px;">Session balance across car types</div>
+                        <div class="kpi-delta neutral" id="car-evenness-badge">Evenness —</div>
+                    </div>
+                </div>
+
+                <!-- Donuts row: gender | skintone | car -->
+                <div class="subjects-vehicle-grid">
+                    <div id="gender-chart" style="height:300px;"></div>
+                    <div id="skin-tone-chart" style="height:300px;"></div>
+                    <div id="car-type-chart" style="height:300px;"></div>
+                </div>
+            </div>
+
+            <!-- §12.2 + §12.3 Subjects Analytics — Anthropometrics -->
+            <div class="section stagger">
+                <div class="section-header">
+                    <div class="section-icon subjects">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <h2 class="section-title">Subjects Analytics — Anthropometrics</h2>
+                </div>
+
+                <!-- §12.2 Scatter + BMI row -->
+                <div class="chart-row">
+                    <div class="chart-wrapper"><div id="height-weight-scatter" style="height:300px;"></div></div>
+                    <div class="chart-wrapper"><div id="bmi-chart" style="height:300px;" data-kpi-id="bmi"></div></div>
+                </div>
+
+                <!-- §12.3 Mini summary row -->
+                <div class="chart-row chart-row-3" style="margin-top:12px;">
+                    <div class="chart-wrapper"><div id="age-mini" style="height:160px;"></div></div>
+                    <div class="chart-wrapper"><div id="height-mini" style="height:160px;"></div></div>
+                    <div class="chart-wrapper"><div id="weight-mini" style="height:160px;"></div></div>
+                </div>
+
+                <!-- Full histograms -->
+                <div id="age-chart" class="chart-container" data-kpi-id="age"></div>
+                <div id="height-chart" class="chart-container" data-kpi-id="height"></div>
+                <div id="weight-chart" class="chart-container"></div>
+            </div>
+
+            <!-- Features Analytics -->
+            <div class="section stagger">
+                <div class="section-header">
+                    <div class="section-icon features">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+                    </div>
+                    <h2 class="section-title">Features Analytics</h2>
+                </div>
+                <div id="features-chart" class="chart-container"></div>
+            </div>
+
+            <!-- §12.4 Feature Drill Down — 2-col grid -->
+            <div class="section stagger">
+                <div class="section-header">
+                    <div class="section-icon drill">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 00-.48-.41h-3.84a.48.48 0 00-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87a.48.48 0 00.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1112 8.4a3.6 3.6 0 010 7.2z"/></svg>
+                    </div>
+                    <h2 class="section-title">Feature Drill Down</h2>
+                </div>
+
+                <div class="feature-drill-grid">
+                    <div class="feature-drill-card">
+                        <div id="crs-type-chart" style="height:300px;"></div>
+                    </div>
+                    <div class="feature-drill-card">
+                        <div id="crs-orientation-chart" style="height:300px;"></div>
+                    </div>
+                    <div class="feature-drill-card">
+                        <div id="crs-tilt-chart" style="height:300px;"></div>
+                    </div>
+                    <div class="feature-drill-card">
+                        <div id="crs-canopy-chart" style="height:300px;"></div>
+                    </div>
+                    <div class="feature-drill-card">
+                        <div id="oop-pose-chart" style="height:300px;"></div>
+                    </div>
+                    <div class="feature-drill-card">
+                        <div id="sbm-misuse-chart" style="height:300px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ─── Plotly Theme ───
+        const PLOTLY_COLORS = ['#5b8def', '#4ecdc4', '#f08080', '#a78bfa', '#d4a55a', '#7dd3fc', '#fca5a5', '#86efac'];
+        const PLOTLY_LAYOUT_BASE = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { family: 'DM Sans, sans-serif', color: '#8b90a0', size: 12 },
+            margin: { t: 38, r: 12, b: 28, l: 32 },
+            xaxis: {
+                gridcolor: 'rgba(255,255,255,0.04)',
+                zerolinecolor: 'rgba(255,255,255,0.06)',
+                tickfont: { size: 11 }
+            },
+            yaxis: {
+                gridcolor: 'rgba(255,255,255,0.04)',
+                zerolinecolor: 'rgba(255,255,255,0.06)',
+                tickfont: { size: 11 }
+            },
+            hoverlabel: {
+                bgcolor: '#1e2333',
+                bordercolor: 'rgba(255,255,255,0.1)',
+                font: { family: 'DM Sans', color: '#e8eaf0', size: 13 }
+            }
+        };
+
+        const PLOTLY_CONFIG = { responsive: true, displayModeBar: false };
+
+        function mergeLayout(overrides) {
+            const base = JSON.parse(JSON.stringify(PLOTLY_LAYOUT_BASE));
+            return deepMerge(base, overrides);
+        }
+
+        function deepMerge(target, source) {
+            for (const key of Object.keys(source)) {
+                if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                    if (!target[key]) target[key] = {};
+                    deepMerge(target[key], source[key]);
+                } else {
+                    target[key] = source[key];
+                }
+            }
+            return target;
+        }
+
+        // ─── Global State ───
+        let dashboardData = null;
+        let filteredDatIds = new Set();
+
+        // ─── Init ───
+        async function initDashboard() {
+            try {
+                const response = await fetch('dashboard-data.json');
+                dashboardData = await response.json();
+
+                // Show generated timestamp
+                if (dashboardData.generated_at) {
+                    const d = new Date(dashboardData.generated_at);
+                    document.getElementById('last-updated').textContent = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+                }
+
+                initializeFilters();
+                applyFilters();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                document.getElementById('loading').innerHTML = '<div class="no-data" style="color: var(--red);">Failed to load dashboard-data.json</div>';
+            }
+        }
+
+        // ─── Filters ───
+        function initializeFilters() {
+            const { filter_options } = dashboardData;
+
+            const projectSelect = document.getElementById('project-filter');
+            filter_options.projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project;
+                option.textContent = project;
+                projectSelect.appendChild(option);
+            });
+
+            updateFeatureFilter('All');
+
+            const usageSelect = document.getElementById('usage-filter');
+            filter_options.usage_types.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                usageSelect.appendChild(option);
+            });
+
+            document.getElementById('start-date').value = filter_options.date_range.min;
+            document.getElementById('end-date').value = filter_options.date_range.max;
+
+            document.getElementById('project-filter').addEventListener('change', (e) => {
+                updateFeatureFilter(e.target.value);
+                applyFilters();
+            });
+            document.getElementById('feature-filter').addEventListener('change', applyFilters);
+            document.getElementById('start-date').addEventListener('change', applyFilters);
+            document.getElementById('end-date').addEventListener('change', applyFilters);
+
+            document.getElementById('usage-filter').addEventListener('change', applyFilters);
+        }
+
+        function updateFeatureFilter(projectValue) {
+            const featureSelect = document.getElementById('feature-filter');
+            featureSelect.innerHTML = '<option value="All">All Features</option>';
+
+            const features = dashboardData.filter_options.features_by_project[projectValue] || [];
+            features.forEach(feature => {
+                const option = document.createElement('option');
+                option.value = feature;
+                option.textContent = feature;
+                featureSelect.appendChild(option);
+            });
+        }
+
+        // ─── Apply Filters ───
+        function applyFilters() {
+            const project = document.getElementById('project-filter').value;
+            const feature = document.getElementById('feature-filter').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            const usageType = document.getElementById('usage-filter').value;
+
+            filteredDatIds = new Set();
+            dashboardData.dat_files.forEach(dat => {
+                if (!dat.feature_names || dat.feature_names.length === 0) return;
+                if (project !== 'All' && dat.project_name !== project) return;
+                if (feature !== 'All' && !dat.feature_names.includes(feature)) return;
+                if (usageType !== 'All' && dat.usage_type !== usageType) return;
+                if (startDate && (!dat.recording_date || dat.recording_date < startDate)) return;
+                if (endDate && (!dat.recording_date || dat.recording_date > endDate)) return;
+                filteredDatIds.add(dat.dat_id);
+            });
+
+            document.getElementById('record-count').textContent = filteredDatIds.size.toLocaleString();
+
+            renderKPIs();
+            renderCarTypeChart();
+            renderSubjectsAnalytics();
+            renderHeightWeightScatter();
+            renderFeaturesChart();
+            renderCRSCharts();
+            renderOOPCharts();
+            renderSBMChart();
+            animateKPICards();
+        }
+
+        // ─── KPIs ───
+        function renderKPIs() {
+            const datMap = new Map();
+            dashboardData.dat_files.forEach(dat => {
+                if (!filteredDatIds.has(dat.dat_id)) return;
+                if (!datMap.has(dat.dat_id) || (datMap.get(dat.dat_id).dat_duration || 0) < (dat.dat_duration || 0)) {
+                    datMap.set(dat.dat_id, dat);
+                }
+            });
+
+            const uniqueDats = Array.from(datMap.values());
+            const uniqueDates = new Set(uniqueDats.map(d => d.recording_date));
+            document.getElementById('kpi-days').textContent = uniqueDates.size.toLocaleString();
+            document.getElementById('kpi-files').textContent = uniqueDats.length.toLocaleString();
+
+            const totalSeconds = uniqueDats.reduce((sum, d) => sum + (d.dat_duration || 0), 0);
+            document.getElementById('kpi-hours').textContent = Math.ceil(totalSeconds / 3600).toLocaleString();
+
+            const totalGB = uniqueDats.reduce((sum, d) => sum + (d.dat_size_gb || 0), 0);
+            document.getElementById('kpi-tb').textContent = Math.floor(totalGB / 1024).toLocaleString();
+
+            const driverCount = dashboardData.drivers.filter(driver =>
+                driver.dat_ids.some(id => filteredDatIds.has(id))
+            ).length;
+            const driverPct = ((driverCount / 600) * 100).toFixed(0);
+            document.getElementById('kpi-drivers').textContent = `${driverCount} / 600`;
+
+            const deltaEl = document.getElementById('kpi-drivers-delta');
+            deltaEl.textContent = `${driverPct}% of target`;
+            deltaEl.className = 'kpi-delta';
+            if (driverPct < 25) deltaEl.classList.add('red');
+            else if (driverPct < 50) deltaEl.classList.add('neutral');
+            else deltaEl.classList.add('green');
+        }
+
+        // ─── Helpers ───
+        function getFilteredDrivers() {
+            return dashboardData.drivers.filter(driver =>
+                driver.dat_ids.some(id => filteredDatIds.has(id))
+            );
+        }
+
+        function avg(arr) {
+            if (!arr.length) return 0;
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        // ─── §11 Needle Dial ───
+        function describeArc(cx, cy, r, startDeg, endDeg) {
+            const toRad = d => (d * Math.PI) / 180;
+            const x1 = cx + r * Math.sin(toRad(startDeg));
+            const y1 = cy - r * Math.cos(toRad(startDeg));
+            const x2 = cx + r * Math.sin(toRad(endDeg));
+            const y2 = cy - r * Math.cos(toRad(endDeg));
+            const large = endDeg - startDeg > 180 ? 1 : 0;
+            return `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
+        }
+
+        function renderNeedleDial(containerId, score, label) {
+            score = Math.max(0, Math.min(1, score));
+            // 12 o'clock = score 1.0 = 0°; tilts clockwise as score drops
+            const angleDeg = (1 - score) * 150 - 75;
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const size = 80;
+            const cx = size / 2, cy = size / 2;
+            const needleLen = size * 0.38;
+            const tipX = cx + needleLen * Math.sin(angleRad);
+            const tipY = cy - needleLen * Math.cos(angleRad);
+            const color = score >= 0.8 ? '#3ecf8e' : score >= 0.6 ? '#e8b84a' : '#f06868';
+
+            const svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"
+                 style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;">
+                <path d="${describeArc(cx, cy, needleLen * 0.85, -75, 75)}"
+                      fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3" stroke-linecap="round"/>
+                <path d="${describeArc(cx, cy, needleLen * 0.85, -75, angleDeg)}"
+                      fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round"/>
+                <line x1="${cx}" y1="${cy}" x2="${tipX}" y2="${tipY}"
+                      stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="${cx}" cy="${cy}" r="3" fill="${color}"/>
+                <text x="${cx}" y="${cy + 18}" text-anchor="middle"
+                      font-size="9" fill="#8b90a0" font-family="monospace">${(score * 100).toFixed(0)}%</text>
+            </svg>`;
+
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.style.position = 'relative';
+            const existing = container.querySelector('.needle-overlay');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.className = 'needle-overlay';
+            div.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;';
+            div.innerHTML = svg;
+            container.appendChild(div);
+        }
+
+        // ─── Car Type ───
+        function renderCarTypeChart() {
+            const carTypeCounts = {};
+            const datMap = new Map();
+
+            dashboardData.dat_files.forEach(dat => {
+                if (!filteredDatIds.has(dat.dat_id)) return;
+                if (!datMap.has(dat.dat_id)) {
+                    datMap.set(dat.dat_id, dat);
+                    if (dat.car_type) carTypeCounts[dat.car_type] = (carTypeCounts[dat.car_type] || 0) + 1;
+                }
+            });
+
+            const labels = Object.keys(carTypeCounts);
+            const values = Object.values(carTypeCounts);
+
+            if (labels.length === 0) {
+                document.getElementById('car-type-chart').innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            Plotly.newPlot('car-type-chart', [{
+                labels, values, type: 'pie', hole: 0.55,
+                marker: { colors: PLOTLY_COLORS },
+                textinfo: 'label+percent',
+                texttemplate: '%{label}: %{percent:.0%}',
+                textfont: { color: '#e8eaf0', size: 11 },
+                hovertemplate: '%{label}<br>Count: %{value}<br>%{percent:.0%}<extra></extra>'
+            }], mergeLayout({
+                title: { text: 'Vehicle Distribution', font: { size: 15, color: '#8b90a0' } },
+                showlegend: false,
+                height: 300,
+                margin: { l: 20, r: 20, t: 38, b: 20 }
+            }), PLOTLY_CONFIG);
+
+            // Center annotation: total session count (animated counter)
+            const carTotal = values.reduce((a, b) => a + b, 0);
+            Plotly.relayout('car-type-chart', {
+                annotations: [{
+                    text: `<b>0</b><br><span style="font-size:10px;color:#8b90a0">sessions</span>`,
+                    x: 0.5, y: 0.5, showarrow: false,
+                    font: { size: 18, color: '#e8eaf0' },
+                    xref: 'paper', yref: 'paper'
+                }]
+            });
+            animateDonutCounter('car-type-chart', carTotal);
+
+            // Evenness score: 1 - CV (coefficient of variation)
+            const carCounts = Object.values(carTypeCounts);
+            const carMean = carCounts.reduce((a, b) => a + b, 0) / carCounts.length;
+            const carStd = Math.sqrt(carCounts.map(v => (v - carMean) ** 2).reduce((a, b) => a + b, 0) / carCounts.length);
+            const carScore = Math.max(0, 1 - (carStd / carMean));
+            renderNeedleDial('car-type-chart', carScore, 'Evenness');
+
+            const badgeEl = document.getElementById('car-evenness-badge');
+            if (badgeEl) {
+                badgeEl.textContent = `Evenness ${(carScore * 100).toFixed(0)}%`;
+                badgeEl.className = 'kpi-delta ' + (carScore >= 0.8 ? 'green' : carScore >= 0.6 ? 'neutral' : 'red');
+            }
+        }
+
+        // ─── Subjects Analytics ───
+        function renderSubjectsAnalytics() {
+            const filteredDrivers = getFilteredDrivers();
+
+            const genderCounts = { Male: 0, Female: 0 };
+            filteredDrivers.forEach(driver => {
+                if (driver.driver_gender) {
+                    genderCounts[driver.driver_gender] = (genderCounts[driver.driver_gender] || 0) + 1;
+                }
+            });
+
+            const totalGender = genderCounts.Male + genderCounts.Female;
+            if (totalGender > 0) {
+                const pMale = genderCounts.Male / totalGender;
+                const score = 1 - Math.abs(pMale - 0.5) * 2;
+                const malePct = (pMale * 100).toFixed(0);
+
+                document.getElementById('gender-score').textContent = score.toFixed(2);
+                const deltaEl = document.getElementById('gender-score-delta');
+                deltaEl.textContent = `${malePct}% Male`;
+                deltaEl.className = 'kpi-delta';
+                if (score < 0.6) deltaEl.classList.add('red');
+                else if (score < 0.8) deltaEl.classList.add('neutral');
+                else deltaEl.classList.add('green');
+            } else {
+                document.getElementById('gender-score').textContent = 'N/A';
+                document.getElementById('gender-score-delta').textContent = '';
+            }
+
+            // Gender spec badges (spec: ≥40% each)
+            if (totalGender > 0) {
+                const femPct = (genderCounts.Female || 0) / totalGender;
+                const malPct = (genderCounts.Male || 0) / totalGender;
+                const femBadge = document.getElementById('gender-female-badge');
+                const malBadge = document.getElementById('gender-male-badge');
+                if (femBadge) {
+                    femBadge.textContent = `F ${(femPct * 100).toFixed(0)}%`;
+                    femBadge.className = 'kpi-delta ' + (femPct >= 0.40 ? 'green' : 'red');
+                }
+                if (malBadge) {
+                    malBadge.textContent = `M ${(malPct * 100).toFixed(0)}%`;
+                    malBadge.className = 'kpi-delta ' + (malPct >= 0.40 ? 'green' : 'red');
+                }
+                // Inject coverage pct for §9 pulse animation: worst of F/M vs 40% spec
+                const genderCovPct = Math.min(femPct / 0.40, malPct / 0.40) * 100;
+                const genderCard = document.querySelector('[data-kpi-id="gender"]');
+                if (genderCard) genderCard.dataset.coveragePct = Math.min(genderCovPct, 100).toFixed(1);
+            }
+
+            // Gender pie
+            if (totalGender > 0) {
+                const genderLabels = Object.keys(genderCounts);
+                const genderColorMap = { 'Female': '#f08080', 'Male': '#5b8def' };
+                const genderValues = Object.values(genderCounts);
+                Plotly.newPlot('gender-chart', [{
+                    labels: genderLabels,
+                    values: genderValues,
+                    type: 'pie', hole: 0.55,
+                    marker: { colors: genderLabels.map(l => genderColorMap[l] || '#666') },
+                    textinfo: 'label+percent',
+                    texttemplate: '%{label}: %{percent:.0%}',
+                    textfont: { color: '#e8eaf0', size: 11 },
+                    hovertemplate: '%{label}<br>Count: %{value}<br>%{percent:.0%}<extra></extra>'
+                }], mergeLayout({
+                    title: { text: 'Gender Distribution', font: { size: 15, color: '#8b90a0' } },
+                    showlegend: false, height: 300, margin: { l: 20, r: 20, t: 38, b: 20 }
+                }), PLOTLY_CONFIG);
+                // Center: total subject count (animated counter)
+                const gTotal = genderValues.reduce((a, b) => a + b, 0);
+                Plotly.relayout('gender-chart', {
+                    annotations: [{
+                        text: `<b>0</b><br><span style="font-size:10px;color:#8b90a0">subjects</span>`,
+                        x: 0.5, y: 0.5, showarrow: false,
+                        font: { size: 18, color: '#e8eaf0' },
+                        xref: 'paper', yref: 'paper'
+                    }]
+                });
+                animateDonutCounter('gender-chart', gTotal);
+                // Needle: min(F%/40, M%/40) — §11c
+                const femPctN = (genderCounts.Female || 0) / totalGender;
+                const malPctN = (genderCounts.Male || 0) / totalGender;
+                renderNeedleDial('gender-chart', Math.min(femPctN / 0.40, malPctN / 0.40, 1), 'Balance');
+            } else {
+                document.getElementById('gender-chart').innerHTML = '<div class="no-data">No data available</div>';
+            }
+
+            // Skin Tone
+            const skinToneCounts = {};
+            filteredDrivers.forEach(driver => {
+                if (driver.driver_skin_tone) {
+                    skinToneCounts[driver.driver_skin_tone] = (skinToneCounts[driver.driver_skin_tone] || 0) + 1;
+                }
+            });
+
+            const skinToneKeys = Object.keys(skinToneCounts).map(Number).sort((a, b) => a - b);
+            const skinToneColors = ['#f5e6d0', '#e8c89a', '#d4a06a', '#b8793e', '#8d5524', '#5c3a1e'];
+
+            // Skin tone coverage badges (spec: Light=Tone1 ≥20%, Medium=Tone2-3 ≥40%, Dark=Tone4-6 ≥20%)
+            const stTotal = Object.values(skinToneCounts).reduce((a, b) => a + b, 0);
+            if (stTotal > 0) {
+                const stGroups = {
+                    light:  [1].reduce((s, k) => s + (skinToneCounts[k] || 0), 0),
+                    medium: [2, 3].reduce((s, k) => s + (skinToneCounts[k] || 0), 0),
+                    dark:   [4, 5, 6].reduce((s, k) => s + (skinToneCounts[k] || 0), 0)
+                };
+                const badgeDefs = [
+                    { id: 'skin-light-badge',  label: 'Light',  count: stGroups.light,  target: 0.20 },
+                    { id: 'skin-medium-badge', label: 'Medium', count: stGroups.medium, target: 0.40 },
+                    { id: 'skin-dark-badge',   label: 'Dark',   count: stGroups.dark,   target: 0.20 }
+                ];
+                badgeDefs.forEach(({ id, label, count, target }) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const pct = count / stTotal;
+                    el.textContent = `${label} ${(pct * 100).toFixed(0)}%`;
+                    el.className = 'kpi-delta ' + (pct >= target ? 'green' : 'red');
+                });
+                // Inject skin tone coverage pct for §9 pulse animation: worst of the three groups
+                const stMinRatio = Math.min(
+                    stGroups.light  / (0.20 * stTotal),
+                    stGroups.medium / (0.40 * stTotal),
+                    stGroups.dark   / (0.20 * stTotal)
+                );
+                const stCard = document.querySelector('[data-kpi-id="skintone"]');
+                if (stCard) stCard.dataset.coveragePct = Math.min(stMinRatio * 100, 100).toFixed(1);
+            }
+
+            if (skinToneKeys.length > 0) {
+                const stValues = skinToneKeys.map(k => skinToneCounts[k]);
+                Plotly.newPlot('skin-tone-chart', [{
+                    labels: skinToneKeys.map(k => `Tone ${k}`),
+                    values: stValues,
+                    type: 'pie', hole: 0.55,
+                    sort: false,
+                    marker: { colors: skinToneKeys.map(k => skinToneColors[k - 1]) },
+                    textinfo: 'label+percent',
+                    texttemplate: '%{label}: %{percent:.0%}',
+                    textfont: { color: '#e8eaf0', size: 11 },
+                    hovertemplate: '%{label}<br>Count: %{value}<br>%{percent:.0%}<extra></extra>'
+                }], mergeLayout({
+                    title: { text: 'Skin Tone Distribution', font: { size: 15, color: '#8b90a0' } },
+                    showlegend: false, height: 300, margin: { l: 20, r: 20, t: 38, b: 20 }
+                }), PLOTLY_CONFIG);
+                // Center: total count (animated counter)
+                const stTotal2 = stValues.reduce((a, b) => a + b, 0);
+                Plotly.relayout('skin-tone-chart', {
+                    annotations: [{
+                        text: `<b>0</b><br><span style="font-size:10px;color:#8b90a0">subjects</span>`,
+                        x: 0.5, y: 0.5, showarrow: false,
+                        font: { size: 18, color: '#e8eaf0' },
+                        xref: 'paper', yref: 'paper'
+                    }]
+                });
+                animateDonutCounter('skin-tone-chart', stTotal2);
+                // Needle: min(light/20, med/40, dark/20) — §11c
+                if (stTotal > 0) {
+                    const stGroups2 = {
+                        light:  [1].reduce((s, k) => s + (skinToneCounts[k] || 0), 0),
+                        medium: [2, 3].reduce((s, k) => s + (skinToneCounts[k] || 0), 0),
+                        dark:   [4, 5, 6].reduce((s, k) => s + (skinToneCounts[k] || 0), 0)
+                    };
+                    const skinScore = Math.min(
+                        stGroups2.light  / (0.20 * stTotal),
+                        stGroups2.medium / (0.40 * stTotal),
+                        stGroups2.dark   / (0.20 * stTotal),
+                        1
+                    );
+                    renderNeedleDial('skin-tone-chart', skinScore, 'Coverage');
+                }
+            } else {
+                document.getElementById('skin-tone-chart').innerHTML = '<div class="no-data">No data available</div>';
+            }
+
+            renderHistogram(filteredDrivers.map(d => d.driver_weight).filter(w => w != null), 'weight-chart', 'Driver Weight Distribution', 40, 150, 5, 'kg');
+            renderHistogram(filteredDrivers.map(d => d.driver_height).filter(h => h != null), 'height-chart', 'Driver Height Distribution', 140, 210, 5, 'cm');
+
+            const ages = filteredDrivers.map(d => d.driver_age).filter(a => a != null);
+            const maxAge = ages.length > 0 ? Math.max(...ages) : 78;
+            // Use 5-year bins and round the upper limit to a clean multiple of 5
+            const upperLimit = Math.ceil((maxAge + 5) / 5) * 5;
+            renderHistogram(ages, 'age-chart', 'Driver Age Distribution', 18, upperLimit, 5, '');
+
+            // BMI (computed from weight(kg) and height(cm))
+            const bmis = filteredDrivers
+                .map(d => {
+                    const w = d.driver_weight;
+                    const h = d.driver_height;
+                    if (w == null || h == null || h === 0) return null;
+                    const hm = h / 100;
+                    return w / (hm * hm);
+                })
+                .filter(b => b != null && isFinite(b));
+
+            const maxBmi = bmis.length > 0 ? Math.max(...bmis) : 40;
+            const bmiUpper = Math.ceil((maxBmi + 2) / 2) * 2;
+            renderHistogram(bmis, 'bmi-chart', 'BMI Distribution', 10, Math.max(30, bmiUpper), 2, 'BMI');
+
+            // §12.3 Mini summary row
+            const weights = filteredDrivers.map(d => d.driver_weight).filter(w => w != null);
+            const heights = filteredDrivers.map(d => d.driver_height).filter(h => h != null);
+            renderMiniHistogram('age-mini',    ages,    18,  upperLimit,  5, 'Age');
+            renderMiniHistogram('height-mini', heights, 140, 210,         5, 'Height (cm)');
+            renderMiniHistogram('weight-mini', weights, 40,  150,         5, 'Weight (kg)');
+        }
+
+        // ─── Histogram ───
+        function renderHistogram(values, elementId, title, minVal, maxVal, binSize, unit) {
+            if (values.length === 0) {
+                document.getElementById(elementId).innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            const bins = {};
+            const labels = [];
+            for (let i = minVal; i < maxVal; i += binSize) {
+                const label = `${i}`;
+                bins[label] = 0;
+                labels.push(label);
+            }
+
+            values.forEach(val => {
+                const binIndex = Math.floor((val - minVal) / binSize);
+                const binStart = minVal + binIndex * binSize;
+                if (binStart >= minVal && binStart < maxVal) {
+                    const label = `${binStart}`;
+                    if (bins[label] !== undefined) bins[label]++;
+                }
+            });
+
+            const mean = values.reduce((a, b) => a + b, 0) / values.length;
+            const totalCount = Object.values(bins).reduce((a, b) => a + b, 0);
+
+            // §10 — Gaussian target curve (only for charts with a spec target)
+            const gaussParams = GAUSSIAN_TARGETS[elementId];
+            let gaussTrace = null;
+            if (gaussParams && totalCount > 0) {
+                const curve = generateGaussianCurve(labels, gaussParams.mean, gaussParams.std, totalCount, binSize);
+                gaussTrace = {
+                    x: curve.x,
+                    y: curve.y,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Target Distribution',
+                    line: { color: '#e8b84a', width: 2.5, shape: 'spline', smoothing: 1.2 },
+                    hovertemplate: 'Target: %{y:.1f}<extra></extra>',
+                    showlegend: true
+                };
+            }
+
+            const barTrace = {
+                x: labels,
+                y: labels.map(l => bins[l]),
+                type: 'bar',
+                name: 'Collected',
+                showlegend: !!gaussTrace,
+                marker: {
+                    color: 'rgba(91,141,239,0.7)',
+                    line: { color: 'rgba(91,141,239,1)', width: 1 }
+                },
+                text: labels.map(l => bins[l]),
+                textposition: 'outside',
+                textfont: { color: '#c8cad4', size: 11 },
+                hovertemplate: '%{x}<br>Count: %{y}<extra></extra>'
+            };
+
+            const traces = [barTrace];
+            if (gaussTrace) traces.push(gaussTrace);
+
+            Plotly.newPlot(elementId, traces, mergeLayout({
+                title: { text: title, font: { size: 15, color: '#8b90a0' } },
+                xaxis: { type: 'category', title: '', gridcolor: 'rgba(255,255,255,0.04)', tickfont: { size: 13 }, tickangle: 0 },
+                yaxis: { title: 'Count', gridcolor: 'rgba(255,255,255,0.04)', tickfont: { size: 11 } },
+                height: 380,
+                bargap: 0.28,
+                showlegend: !!gaussTrace,
+                legend: { font: { color: '#8b90a0', size: 10 }, x: 1, xanchor: 'right', y: 1, bgcolor: 'rgba(0,0,0,0)' }
+            }), PLOTLY_CONFIG);
+
+            // Mean line + coverage zone overlay
+            applyHistogramOverlay(elementId, labels, bins, mean, minVal, binSize);
+        }
+
+        // ─── §12.2 Height × Weight Scatter ───
+        function renderHeightWeightScatter() {
+            const drivers = getFilteredDrivers();
+            if (drivers.length === 0) {
+                document.getElementById('height-weight-scatter').innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+            const trace = {
+                x: drivers.map(d => d.driver_weight),
+                y: drivers.map(d => d.driver_height),
+                mode: 'markers', type: 'scatter', name: 'Subject',
+                marker: {
+                    size: 7,
+                    color: drivers.map(d =>
+                        d.driver_gender === 'Male'   ? 'rgba(91,141,239,0.72)' :
+                        d.driver_gender === 'Female' ? 'rgba(240,104,104,0.72)' :
+                        'rgba(150,150,180,0.5)'),
+                    line: { width: 0.5, color: 'rgba(255,255,255,0.12)' }
+                },
+                hovertemplate: 'Weight: %{x}kg<br>Height: %{y}cm<extra></extra>'
+            };
+            Plotly.newPlot('height-weight-scatter', [trace], mergeLayout({
+                title: { text: 'Height × Weight Distribution', font: { size: 15, color: '#8b90a0' } },
+                xaxis: { title: { text: 'Weight (kg)' }, gridcolor: 'rgba(255,255,255,0.04)' },
+                yaxis: { title: { text: 'Height (cm)' }, gridcolor: 'rgba(255,255,255,0.04)' },
+                height: 300, showlegend: false
+            }), PLOTLY_CONFIG);
+
+            const avgW = avg(drivers.map(d => d.driver_weight).filter(Boolean));
+            const avgH = avg(drivers.map(d => d.driver_height).filter(Boolean));
+            Plotly.relayout('height-weight-scatter', {
+                shapes: [
+                    { type: 'line', x0: avgW, x1: avgW, y0: 0, y1: 1, yref: 'paper',
+                      line: { color: '#d4a55a', width: 1.5, dash: 'dot' } },
+                    { type: 'line', x0: 0, x1: 1, xref: 'paper', y0: avgH, y1: avgH,
+                      line: { color: '#d4a55a', width: 1.5, dash: 'dot' } }
+                ],
+                annotations: [
+                    { x: avgW, y: 1, yref: 'paper', yanchor: 'bottom',
+                      text: `Avg ${avgW.toFixed(1)}kg`, showarrow: false,
+                      font: { size: 10, color: '#d4a55a' } },
+                    { x: 1, xref: 'paper', y: avgH, xanchor: 'right',
+                      text: `Avg ${avgH.toFixed(0)}cm`, showarrow: false,
+                      font: { size: 10, color: '#d4a55a' } }
+                ]
+            });
+        }
+
+        // ─── §12.3 Mini Histogram ───
+        function renderMiniHistogram(elementId, rawValues, minVal, maxVal, binSize, title) {
+            if (!rawValues || rawValues.length === 0) {
+                document.getElementById(elementId).innerHTML = '<div class="no-data" style="height:160px;"></div>';
+                return;
+            }
+            const bins = {}, labels = [];
+            for (let i = minVal; i < maxVal; i += binSize) {
+                labels.push(`${i}`);
+                bins[`${i}`] = 0;
+            }
+            rawValues.forEach(val => {
+                const binStart = minVal + Math.floor((val - minVal) / binSize) * binSize;
+                const label = `${binStart}`;
+                if (bins[label] !== undefined) bins[label]++;
+            });
+            Plotly.newPlot(elementId, [{
+                x: labels, y: labels.map(l => bins[l]),
+                type: 'bar',
+                marker: { color: 'rgba(91,141,239,0.55)' },
+                hoverinfo: 'x+y'
+            }], mergeLayout({
+                title: { text: title, font: { size: 12 } },
+                margin: { l: 24, r: 8, t: 28, b: 24 },
+                bargap: 0.15,
+                height: 160,
+                xaxis: { showticklabels: false, type: 'category' },
+                yaxis: { showticklabels: false }
+            }), PLOTLY_CONFIG);
+        }
+
+        // ─── Features ───
+        function renderFeaturesChart() {
+            const featureCounts = {};
+            Object.entries(dashboardData.feature_dat_map).forEach(([feature, datIds]) => {
+                const count = datIds.filter(id => filteredDatIds.has(id)).length;
+                if (count > 0) featureCounts[feature] = count;
+            });
+
+            const sortedFeatures = Object.entries(featureCounts).sort((a, b) => b[1] - a[1]);
+
+            if (sortedFeatures.length === 0) {
+                document.getElementById('features-chart').innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            Plotly.newPlot('features-chart', [{
+                x: sortedFeatures.map(f => f[1]),
+                y: sortedFeatures.map(f => f[0]),
+                type: 'bar',
+                orientation: 'h',
+                marker: {
+                    color: sortedFeatures.map((_, i) => PLOTLY_COLORS[i % PLOTLY_COLORS.length]),
+                    line: { width: 0 }
+                },
+                text: sortedFeatures.map(f => f[1]),
+                textposition: 'outside',
+                textfont: { color: '#c8cad4', size: 11 },
+                hovertemplate: '%{y}<br>Count: %{x}<extra></extra>'
+            }], mergeLayout({
+                title: { text: 'DAT Files per Feature', font: { size: 15, color: '#8b90a0' } },
+                xaxis: { title: 'Count', gridcolor: 'rgba(255,255,255,0.04)' },
+                yaxis: { title: '', automargin: true, tickfont: { size: 11 } },
+                height: Math.max(400, sortedFeatures.length * 28),
+                margin: { l: 140 },
+                bargap: 0.32
+            }), PLOTLY_CONFIG);
+        }
+
+        // ─── §12.4 Feature Drill Donut helper ───
+        function renderFeatureDrillDonut(elementId, labels, values, title) {
+            if (!labels.length) {
+                document.getElementById(elementId).innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+            Plotly.newPlot(elementId, [{
+                labels, values, type: 'pie', hole: 0.55,
+                textinfo: 'label+percent',
+                texttemplate: '%{label}: %{percent:.0%}',
+                textfont: { color: '#e8eaf0', size: 10 },
+                hovertemplate: '%{label}: %{value} (%{percent})<extra></extra>',
+                marker: { colors: PLOTLY_COLORS }
+            }], mergeLayout({
+                title: { text: title, font: { size: 13, color: '#8b90a0' } },
+                showlegend: false, height: 300,
+                margin: { l: 20, r: 20, t: 36, b: 20 }
+            }), PLOTLY_CONFIG);
+        }
+
+        // ─── CRS Charts ───
+        function renderCRSCharts() {
+            const crsData = (dashboardData.scenarios.crs || []).filter(s => filteredDatIds.has(s.dat_id));
+            const crsMap = new Map();
+            crsData.forEach(item => { if (!crsMap.has(item.dat_id)) crsMap.set(item.dat_id, item); });
+            const uniqueCRS = Array.from(crsMap.values());
+
+            // CRS Type donut + needle (score: unique types collected / 30 required)
+            const typeCountsObj = {};
+            uniqueCRS.forEach(item => {
+                if (item.crs_type) typeCountsObj[item.crs_type] = (typeCountsObj[item.crs_type] || 0) + 1;
+            });
+            renderFeatureDrillDonut('crs-type-chart',
+                Object.keys(typeCountsObj), Object.values(typeCountsObj), 'CRS Type Distribution');
+            const crsTypesCollected = Object.keys(typeCountsObj).length;
+            const crsTypeScore = Math.min(crsTypesCollected / 30, 1);
+            renderNeedleDial('crs-type-chart', crsTypeScore, 'Coverage');
+
+            // CRS Orientation donut + needle (derived from crs_type: Rear-Facing → Rearward)
+            const orientCounts = { Rearward: 0, Forward: 0 };
+            uniqueCRS.forEach(item => {
+                if (!item.crs_type) return;
+                if (item.crs_type.toLowerCase().includes('rear')) orientCounts.Rearward++;
+                else orientCounts.Forward++;
+            });
+            renderFeatureDrillDonut('crs-orientation-chart',
+                Object.keys(orientCounts), Object.values(orientCounts), 'CRS Seat Orientation');
+            const totalOrient = orientCounts.Rearward + orientCounts.Forward;
+            if (totalOrient > 0) {
+                const rearPct = (orientCounts.Rearward / totalOrient) * 100;
+                const fwdPct  = (orientCounts.Forward  / totalOrient) * 100;
+                const orientScore = Math.min(rearPct / 50, fwdPct / 50, 1);
+                renderNeedleDial('crs-orientation-chart', orientScore, 'Balance');
+            }
+
+            // CRS Tilt donut (no needle)
+            const tiltCounts = {};
+            uniqueCRS.forEach(item => {
+                if (item.crs_tilt) tiltCounts[item.crs_tilt] = (tiltCounts[item.crs_tilt] || 0) + 1;
+            });
+            renderFeatureDrillDonut('crs-tilt-chart',
+                Object.keys(tiltCounts), Object.values(tiltCounts), 'CRS Tilt Distribution');
+
+            // CRS Canopy donut (no needle)
+            const canopyCounts = {};
+            uniqueCRS.forEach(item => {
+                if (item.crs_canopy) canopyCounts[item.crs_canopy] = (canopyCounts[item.crs_canopy] || 0) + 1;
+            });
+            renderFeatureDrillDonut('crs-canopy-chart',
+                Object.keys(canopyCounts), Object.values(canopyCounts), 'CRS Canopy Distribution');
+        }
+
+        // ─── OOP Charts ───
+        function renderOOPCharts() {
+            const oopData = (dashboardData.scenarios.oop || []).filter(s => filteredDatIds.has(s.dat_id));
+            const oopMap = new Map();
+            oopData.forEach(item => { if (!oopMap.has(item.dat_id)) oopMap.set(item.dat_id, item); });
+            const uniqueOOP = Array.from(oopMap.values());
+
+            const poseCounts = {};
+            uniqueOOP.forEach(item => {
+                if (item.passenger_pose_group) poseCounts[item.passenger_pose_group] = (poseCounts[item.passenger_pose_group] || 0) + 1;
+            });
+            renderFeatureDrillDonut('oop-pose-chart',
+                Object.keys(poseCounts), Object.values(poseCounts), 'OOP Passenger Pose');
+            const oopVariants = Object.keys(poseCounts).length;
+            renderNeedleDial('oop-pose-chart', Math.min(oopVariants / 4, 1), 'Variants');
+        }
+
+        // ─── SBM Chart ───
+        function renderSBMChart() {
+            const sbmData = (dashboardData.scenarios.sbm || []).filter(s => filteredDatIds.has(s.dat_id));
+            const sbmMap = new Map();
+            sbmData.forEach(item => { if (!sbmMap.has(item.dat_id)) sbmMap.set(item.dat_id, item); });
+            const uniqueSBM = Array.from(sbmMap.values());
+
+            const sbmCounts = {};
+            uniqueSBM.forEach(item => {
+                if (item.driver_belt_misuse) sbmCounts[item.driver_belt_misuse] = (sbmCounts[item.driver_belt_misuse] || 0) + 1;
+            });
+            renderFeatureDrillDonut('sbm-misuse-chart',
+                Object.keys(sbmCounts), Object.values(sbmCounts), 'SBM Belt Misuse');
+            const sbmVariants = Object.keys(sbmCounts).length;
+            renderNeedleDial('sbm-misuse-chart', Math.min(sbmVariants / 4, 1), 'Variants');
+        }
+
+        // ─── Generic Themed Bar ───
+        function renderThemedBar(dataArray, field, elementId, title) {
+            if (dataArray.length === 0) {
+                document.getElementById(elementId).innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            const counts = {};
+            dataArray.forEach(item => {
+                const value = item[field];
+                if (value != null && value !== '') counts[value] = (counts[value] || 0) + 1;
+            });
+
+            const sortedEntries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+            if (sortedEntries.length === 0) {
+                document.getElementById(elementId).innerHTML = '<div class="no-data">No data available</div>';
+                return;
+            }
+
+            Plotly.newPlot(elementId, [{
+                x: sortedEntries.map(e => e[0]),
+                y: sortedEntries.map(e => e[1]),
+                type: 'bar',
+                marker: {
+                    color: sortedEntries.map((_, i) => PLOTLY_COLORS[i % PLOTLY_COLORS.length]),
+                    line: { width: 0 }
+                },
+                text: sortedEntries.map(e => e[1]),
+                textposition: 'outside',
+                textfont: { color: '#c8cad4', size: 11 },
+                hovertemplate: '%{x}<br>Count: %{y}<extra></extra>'
+            }], mergeLayout({
+                title: { text: title, font: { size: 15, color: '#8b90a0' } },
+                xaxis: { type: 'category', tickfont: { size: 11 } },
+                yaxis: { title: 'DAT Count', gridcolor: 'rgba(255,255,255,0.04)' },
+                height: 380,
+                bargap: 0.38
+            }), PLOTLY_CONFIG);
+        }
+
+
+// ─── Ordered Themed Bar (custom category order) ───
+function renderThemedBarOrdered(dataArray, field, elementId, title, orderFn) {
+    if (dataArray.length === 0) {
+        document.getElementById(elementId).innerHTML = '<div class="no-data">No data available</div>';
+        return;
+    }
+
+    const counts = {};
+    dataArray.forEach(item => {
+        const value = item[field];
+        if (value != null && value !== '') counts[value] = (counts[value] || 0) + 1;
+    });
+
+    let sortedEntries = Object.entries(counts);
+    if (sortedEntries.length === 0) {
+        document.getElementById(elementId).innerHTML = '<div class="no-data">No data available</div>';
+        return;
+    }
+
+    // Sort by the provided logical order; unknowns fall to the end
+    sortedEntries.sort((a, b) => {
+        const oa = typeof orderFn === 'function' ? orderFn(a[0]) : 999;
+        const ob = typeof orderFn === 'function' ? orderFn(b[0]) : 999;
+        if (oa !== ob) return oa - ob;
+        // stable fallback so results are deterministic
+        return String(a[0]).localeCompare(String(b[0]));
+    });
+
+    const categoryArray = sortedEntries.map(e => e[0]);
+
+    Plotly.newPlot(elementId, [{
+        x: categoryArray,
+        y: sortedEntries.map(e => e[1]),
+        type: 'bar',
+        marker: {
+            color: sortedEntries.map((_, i) => PLOTLY_COLORS[i % PLOTLY_COLORS.length]),
+            line: { width: 0 }
+        },
+        text: sortedEntries.map(e => e[1]),
+        textposition: 'outside',
+        textfont: { color: '#c8cad4', size: 11 },
+        hovertemplate: '%{x}<br>Count: %{y}<extra></extra>'
+    }], mergeLayout({
+        title: { text: title, font: { size: 15, color: '#8b90a0' } },
+        xaxis: {
+            type: 'category',
+            categoryorder: 'array',
+            categoryarray: categoryArray,
+            tickfont: { size: 11 }
+        },
+        yaxis: { title: 'DAT Count', gridcolor: 'rgba(255,255,255,0.04)' },
+        height: 380,
+        bargap: 0.38
+    }), PLOTLY_CONFIG);
+}
+
+// CRS canopy logical ordering:
+// Closed → Quarter Open → Half Open → Three Quarters → Fully Open
+function canopyOrderValue(value) {
+    const s = String(value).toLowerCase().trim();
+
+    // Hebrew support (if data labels are localized)
+    if (s.includes('סגור')) return 0;
+    if (s.includes('רבע')) return 1;
+    if (s.includes('חצי')) return 2;
+    if (s.includes('שלוש') && s.includes('רבע')) return 3;
+    if (s.includes('פתוח')) return 4;
+
+    // Numeric / fraction support
+    if (s === '0' || s === '0.0' || s.includes('closed')) return 0;
+    if (s.includes('1/4') || s.includes('0.25') || s.includes('quarter')) return 1;
+    if (s.includes('1/2') || s.includes('0.5') || s.includes('half')) return 2;
+    if (s.includes('3/4') || s.includes('0.75') || (s.includes('three') && s.includes('quarter'))) return 3;
+    if (s.includes('fully') || s.includes('full') || s == 'open' || s.includes('open')) return 4;
+
+    return 999;
+}
+
+
+// ─── Coverage Spec Zones (Telus / Demographic Diversity Requirements) ───
+// Target percentages are of total adult subjects (600 target).
+// Bins are matched by their numeric midpoint against binStart/binEnd ranges.
+const COVERAGE_ZONES = {
+    'age-chart': [
+        { label: 'Young (18–30)',  binStart: 18,  binEnd: 31,  targetPct: 25, color: 'rgba(91,141,239,0.09)' },
+        { label: 'Middle (31–50)', binStart: 31,  binEnd: 51,  targetPct: 40, color: 'rgba(78,205,196,0.09)' },
+        { label: 'Older (51–70)',  binStart: 51,  binEnd: 71,  targetPct: 25, color: 'rgba(167,139,250,0.09)' },
+        { label: 'Senior (71+)',   binStart: 71,  binEnd: 999, targetPct: 10, color: 'rgba(240,104,104,0.09)' }
+    ],
+    'bmi-chart': [
+        { label: 'Slim',          binStart: 10,   binEnd: 18.5, targetPct: 10, color: 'rgba(91,141,239,0.09)' },
+        { label: 'Average',       binStart: 18.5, binEnd: 25,   targetPct: 40, color: 'rgba(62,207,142,0.09)' },
+        { label: 'Overweight',    binStart: 25,   binEnd: 30,   targetPct: 25, color: 'rgba(232,184,74,0.09)' },
+        { label: 'Obese (30+)',   binStart: 30,   binEnd: 999,  targetPct: 15, color: 'rgba(240,104,104,0.09)' }
+    ],
+    'height-chart': [
+        { label: 'Short (<163)',  binStart: 140, binEnd: 163, targetPct: 15, color: 'rgba(91,141,239,0.09)' },
+        { label: 'Medium',        binStart: 163, binEnd: 175, targetPct: 40, color: 'rgba(78,205,196,0.09)' },
+        { label: 'Tall (≥175)',   binStart: 175, binEnd: 999, targetPct: 15, color: 'rgba(167,139,250,0.09)' }
+    ]
+    // weight-chart: no spec target defined
+};
+
+// ─── §10 Gaussian Target Parameters (derived from spec, not fitted to data) ───
+// mean/std represent the *ideal* target population, not a description of what was collected.
+// xMin/xMax define the plotting range for the bell curve.
+const GAUSSIAN_TARGETS = {
+    'age-chart':    { mean: 42,  std: 16,  xMin: 18,  xMax: 93  },
+    'bmi-chart':    { mean: 24,  std: 5.5, xMin: 10,  xMax: 40  },
+    'height-chart': { mean: 170, std: 10,  xMin: 140, xMax: 210 }
+    // weight-chart: intentionally omitted — no spec target defined
+};
+
+// Extract numeric midpoint from a bin label like "40-45 kg", "18-23", "10-12 BMI", "75+"
+// Strips units, Unicode comparison operators (≥ ≤ < >), then handles range vs. open-ended.
+function parseBinMid(label) {
+    const stripped = String(label).replace(/[a-zA-Z%≥≤<>\s]/g, '').trim();
+    if (stripped.endsWith('+')) {
+        const n = parseFloat(stripped);
+        if (!isNaN(n)) return n + 5;
+    }
+    // Use lastIndexOf to avoid mis-splitting on leading negative (though unlikely in demographics)
+    const dashIdx = stripped.lastIndexOf('-');
+    if (dashIdx > 0) {
+        const lo = parseFloat(stripped.slice(0, dashIdx));
+        const hi = parseFloat(stripped.slice(dashIdx + 1));
+        if (!isNaN(lo) && !isNaN(hi)) return (lo + hi) / 2;
+    }
+    const n = parseFloat(stripped);
+    if (!isNaN(n)) return n;
+    console.warn(`[parseBinMid] Unrecognised bin label: "${label}" — returning 0`);
+    return 0;
+}
+
+// ─── §10.3 Gaussian Curve Generator ───
+// Returns {x, y} sampled at each bin label's midpoint so the trace overlays
+// the categorical bar axis without needing a secondary x-axis.
+// y is scaled so area under curve ≈ totalCount × binWidth (matches bar scale).
+function generateGaussianCurve(labels, mean, std, totalCount, binWidth) {
+    const x = [];
+    const y = [];
+    labels.forEach(label => {
+        const xi = parseBinMid(label);
+        const exponent = -0.5 * Math.pow((xi - mean) / std, 2);
+        const pdf = (1 / (std * Math.sqrt(2 * Math.PI))) * Math.exp(exponent);
+        x.push(label);
+        y.push(parseFloat((pdf * totalCount * binWidth).toFixed(3)));
+    });
+    return { x, y };
+}
+
+// Apply mean reference line + spec zone overlay to a histogram after it's rendered
+function applyHistogramOverlay(elementId, labels, bins, mean, minVal, binSize) {
+    const totalActual = Object.values(bins).reduce((a, b) => a + b, 0);
+    if (totalActual === 0 && (mean == null || isNaN(mean))) return;
+
+    const maxCount = Math.max(...Object.values(bins), 1);
+    const shapes = [], annotations = [];
+    let barColors = null;
+
+    // ── Zone overlay ──
+    const zones = COVERAGE_ZONES[elementId];
+    if (zones && totalActual > 0) {
+        const colorMap = {};
+        let worstZoneRatio = Infinity;
+        zones.forEach(zone => {
+            const zoneBins = labels.filter(l => {
+                const mid = parseBinMid(l);
+                return mid >= zone.binStart && mid < zone.binEnd;
+            });
+            if (zoneBins.length === 0) return;
+
+            const fi = labels.indexOf(zoneBins[0]);
+            const li = labels.indexOf(zoneBins[zoneBins.length - 1]);
+            const midLabel = zoneBins[Math.floor(zoneBins.length / 2)];
+            const mi = labels.indexOf(midLabel);
+
+            const zoneActual = zoneBins.reduce((s, l) => s + (bins[l] || 0), 0);
+            const zoneTarget = (zone.targetPct / 100) * totalActual;
+            const met = zoneActual >= zoneTarget;
+            if (zoneTarget > 0) worstZoneRatio = Math.min(worstZoneRatio, zoneActual / zoneTarget);
+            const pct = zoneTarget > 0 ? Math.round((zoneActual / zoneTarget) * 100) : 100;
+            const binTarget = zoneTarget / zoneBins.length;
+
+            // Background shading per zone
+            shapes.push({
+                type: 'rect', layer: 'below',
+                x0: fi - 0.5, x1: li + 0.5,
+                y0: 0, y1: 1, yref: 'paper',
+                fillcolor: zone.color, line: { width: 0 }
+            });
+
+            // Dashed target level line
+            shapes.push({
+                type: 'line', layer: 'above',
+                x0: fi - 0.5, x1: li + 0.5,
+                y0: binTarget, y1: binTarget,
+                line: { color: '#d4a55a', width: 1.5, dash: 'dash' }
+            });
+
+            // % coverage label at top of zone
+            annotations.push({
+                x: mi, y: 0.97, xref: 'x', yref: 'paper', yanchor: 'top',
+                text: `<b>${pct}%</b>`,
+                showarrow: false,
+                font: { size: 11, color: met ? '#3ecf8e' : '#f06868' }
+            });
+            annotations.push({
+                x: mi, y: 0.88, xref: 'x', yref: 'paper', yanchor: 'top',
+                text: zone.label,
+                showarrow: false,
+                font: { size: 9, color: '#585d70' }
+            });
+
+            // Color individual bars green/red vs target per bin
+            zoneBins.forEach(l => {
+                colorMap[l] = (bins[l] || 0) >= binTarget
+                    ? 'rgba(62,207,142,0.75)'
+                    : 'rgba(240,104,104,0.75)';
+            });
+        });
+        barColors = labels.map(l => colorMap[l] || 'rgba(91,141,239,0.7)');
+        // Inject worst-zone coverage % for §9 pulse animation
+        if (isFinite(worstZoneRatio)) {
+            const el = document.getElementById(elementId);
+            if (el) el.dataset.coveragePct = Math.min(worstZoneRatio * 100, 100).toFixed(1);
+        }
+    }
+
+    // ── Mean reference line ──
+    if (mean != null && !isNaN(mean) && labels.length > 0) {
+        // Find the label whose midpoint is closest to the mean
+        const nearestBin = labels.reduce((best, l) =>
+            Math.abs(parseBinMid(l) - mean) < Math.abs(parseBinMid(best) - mean) ? l : best
+        , labels[0]);
+        const ni = labels.indexOf(nearestBin);
+        shapes.push({
+            type: 'line', layer: 'above',
+            x0: ni, x1: ni, y0: 0, y1: maxCount * 1.15,
+            line: { color: '#d4a55a', width: 2, dash: 'dot' }
+        });
+        annotations.push({
+            x: ni, y: maxCount * 1.18, xref: 'x', yref: 'y',
+            text: `Avg ${mean.toFixed(1)}`,
+            showarrow: false, yanchor: 'bottom',
+            font: { size: 10, color: '#d4a55a' }
+        });
+    }
+
+    if (shapes.length > 0 || annotations.length > 0) {
+        Plotly.relayout(elementId, { shapes, annotations });
+    }
+    if (barColors) {
+        Plotly.restyle(elementId, { 'marker.color': [barColors] }, [0]);
+    }
+}
+
+// ─── §9.2 Deficit Pulse Animation ───
+function animateKPICards() {
+    document.querySelectorAll('[data-coverage-pct]').forEach(el => {
+        const pct = parseFloat(el.dataset.coveragePct);
+        el.classList.remove('anim-critical', 'anim-warning');
+        if (pct < 60) {
+            el.classList.add('anim-critical');
+        } else if (pct < 80) {
+            el.classList.add('anim-warning');
+        }
+        // ≥ 80%: healthy = silent, no animation
+    });
+}
+
+// ─── §9.3 Section Header Sweep ───
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.section-header').forEach((header, i) => {
+        setTimeout(() => header.classList.add('section-header-animate'), i * 120);
+    });
+});
+
+// ─── §9.4 Donut Counter Animation ───
+function animateDonutCounter(elementId, finalValue, suffix = '') {
+    const duration = 900;
+    const steps = 40;
+    const interval = duration / steps;
+    let current = 0;
+    const label = suffix || (elementId === 'car-type-chart' ? 'sessions' : 'subjects');
+
+    const timer = setInterval(() => {
+        current += Math.ceil(finalValue / steps);
+        if (current >= finalValue) {
+            current = finalValue;
+            clearInterval(timer);
+        }
+        Plotly.relayout(elementId, {
+            'annotations[0].text':
+                `<b>${current.toLocaleString()}</b><br><span style="font-size:10px;color:#8b90a0">${label}</span>`
+        });
+    }, interval);
+}
+
+// ─── Start ───
+        initDashboard();
+    </script>
+</body>
+</html>
