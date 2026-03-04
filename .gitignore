@@ -10,3 +10,13 @@ __pycache__/
 
 # VS Code
 .vscode/
+
+# Node
+node_modules/
+
+# Generated / large data files
+GENERAL/dashboard-data.json
+GENERAL/screenshot-log.txt
+
+# Screenshot test artifacts
+GENERAL/ss_*.png
