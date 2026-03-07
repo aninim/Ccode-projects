@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>למד איתי</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#FF6B35" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="למד איתי" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&family=Varela+Round&display=swap" rel="stylesheet" />
+  <style>
+    /* ---- Design tokens ---- */
+    :root {
+      --bg:               #FFF9F0;
+      --bg-surface:       white;
+      --bg-surface-solid: white;
+      --surface-border:   transparent;
+      --text-muted:       #666;
+      --orange: #FF6B35;
+      --teal:   #00B4A6;
+      --yellow: #FFD166;
+      --green:  #06D6A0;
+      --red:    #EF476F;
+      --dark:   #1A1A2E;
+      --radius: 18px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      font-family: 'Rubik', sans-serif;
+      color: var(--dark);
+      overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none; user-select: none;
+      transition: background 0.5s;
+    }
+
+    /* ---- Screen system ---- */
+    .screen { display: none; width: 100vw; height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; }
+    .screen.active { display: flex; }
+
+    /* ---- Back button ---- */
+    .back-btn {
+      position: fixed; top: 0.9rem; left: 0.9rem; z-index: 50;
+      background: var(--bg-surface-solid); border: 1px solid var(--surface-border);
+      border-radius: 50%; width: 52px; height: 52px; font-size: 1.4rem; cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      display: flex; align-items: center; justify-content: center; color: var(--dark);
+    }
+
+    /* ---- Stars display ---- */
+    .stars-badge {
+      position: fixed; top: 0.9rem; right: 0.9rem; z-index: 50;
+      background: var(--yellow); border-radius: 20px;
+      padding: 0.3rem 0.9rem; font-size: 1rem; font-weight: 700;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15); color: var(--dark);
+    }
+
+    /* ---- HOME SCREEN ---- */
+    .home-title {
+      font-family: 'Varela Round', sans-serif;
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      color: var(--orange); margin-bottom: 1.2rem; text-align: center;
+    }
+    .module-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(0.7rem, 2.5vw, 1.2rem); width: min(92vw, 380px);
+    }
+    .module-btn {
+      min-height: 100px; border: none; border-radius: var(--radius); cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.4rem; font-family: 'Varela Round', sans-serif; font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18); transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .module-btn:active { transform: scale(0.93); box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+    .module-btn .icon  { font-size: 2.4rem; }
+    .module-btn .label { font-size: 1rem; }
+    .btn-letters     { background: var(--orange);                              color: white; }
+    .btn-numbers     { background: var(--teal);                                color: white; }
+    .btn-shapes      { background: #A78BFA;                                    color: white; }
+    .btn-colors      { background: linear-gradient(135deg,#FF6B35,#FFD166,#06D6A0,#A78BFA); color: white; }
+    .btn-math        { background: #FF4F8B;                                    color: white; }
+    .btn-engineering { background: #26A69A;                                    color: white; }
+    .btn-trace       { background: var(--yellow);                              color: var(--dark); }
+    .settings-gear   { margin-top: 0.7rem; background: none; border: none; font-size: 1.4rem; cursor: pointer; opacity: 0.4; transition: opacity 0.2s; }
+    .settings-gear:hover { opacity: 0.8; }
+
+    /* ---- QUIZ SHARED ---- */
+    .choices-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(0.6rem, 2vw, 1rem); width: min(92vw, 360px);
+    }
+    .choice-btn {
+      min-height: 96px; border: 3px solid var(--surface-border); border-radius: 14px;
+      background: var(--bg-surface); cursor: pointer; font-family: 'Varela Round', sans-serif;
+      font-size: clamp(2rem, 8vw, 3rem); color: var(--dark);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: all 0.15s;
+    }
+    .choice-btn:active  { transform: scale(0.93); }
+    .choice-btn.correct { background: var(--green); border-color: var(--green); color: white; }
+    .choice-btn.wrong   { background: var(--red);   border-color: var(--red);   color: white; }
+    .choice-btn:focus-visible,
+    .color-choice-btn:focus-visible,
+    .module-btn:focus-visible { outline: 4px solid var(--yellow); outline-offset: 3px; }
+
+    /* ---- LETTERS QUIZ ---- */
+    .quiz-letter {
+      font-family: 'Varela Round', sans-serif;
+      font-size: clamp(7rem, 22vw, 11rem); line-height: 1; color: var(--dark); margin: 0.2rem 0;
+    }
+    .quiz-word { font-size: clamp(1.1rem, 4vw, 1.5rem); color: var(--text-muted); margin-bottom: 0.8rem; }
+
+    /* ---- TRACING SCREEN ---- */
+    .trace-meta { font-size: clamp(1.2rem, 5vw, 1.8rem); color: var(--text-muted); margin-bottom: 0.4rem; }
+    .trace-mode-badge { background: var(--teal); color: white; border-radius: 20px; padding: 0.25rem 1rem; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+    #trace-canvas { border-radius: var(--radius); background: white; box-shadow: 0 4px 18px rgba(0,0,0,0.14); touch-action: none; display: block; }
+    .trace-controls { display: flex; gap: 0.8rem; margin-top: 0.9rem; }
+    .trace-btn { min-width: 96px; min-height: 52px; border: none; border-radius: 12px; cursor: pointer; font-family: 'Rubik', sans-serif; font-size: 1rem; font-weight: 700; transition: transform 0.1s; }
+    .trace-btn:active { transform: scale(0.93); }
+
+    /* ---- NUMBERS QUIZ ---- */
+    .num-display { font-family: 'Varela Round', sans-serif; font-size: clamp(5rem, 18vw, 8rem); color: var(--teal); line-height: 1; }
+    .num-emojis  { font-size: clamp(1.2rem, 4vw, 1.8rem); letter-spacing: 0.2rem; margin: 0.4rem 0 0.2rem; min-height: 2rem; }
+    .num-word    { font-size: clamp(1.2rem, 4vw, 1.8rem); color: var(--dark); margin-bottom: 0.7rem; }
+
+    /* ---- SHAPES QUIZ ---- */
+    .shape-display { font-size: clamp(6rem, 20vw, 9rem); line-height: 1; margin: 0.4rem 0 0.8rem; transition: color 0.2s; }
+
+    /* ---- COLORS QUIZ ---- */
+    .color-display {
+      width: clamp(120px, 30vw, 155px); height: clamp(120px, 30vw, 155px);
+      border-radius: 50%; margin: 0.4rem 0 0.2rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Varela Round', sans-serif; font-weight: 700; transition: background 0.25s;
+    }
+    .color-name-label { font-family: 'Varela Round', sans-serif; font-size: clamp(1.4rem, 5vw, 2rem); color: var(--dark); min-height: 2.4rem; margin-bottom: 0.4rem; text-align: center; }
+    .color-choice-btn { min-height: 96px; border-radius: 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); transition: all 0.15s; }
+    .color-choice-btn:active  { transform: scale(0.93); }
+    .color-choice-btn.correct { outline: 4px solid var(--green); outline-offset: 2px; }
+    .color-choice-btn.wrong   { outline: 4px solid var(--red);   outline-offset: 2px; }
+    .color-btn-name { color: white; font-family: 'Varela Round', sans-serif; font-size: clamp(0.9rem, 3vw, 1.15rem); font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.45); pointer-events: none; }
+
+    /* ---- MATH QUIZ ---- */
+    .math-display { font-family: 'Varela Round', sans-serif; text-align: center; color: var(--dark); margin: 0.5rem 0; max-width: min(92vw, 360px); }
+    .math-emoji-row    { font-size: clamp(2rem, 8vw, 3rem); line-height: 1.5; letter-spacing: 0.1rem; }
+    .math-question-text{ font-size: clamp(1.4rem, 5vw, 2rem); color: var(--text-muted); margin-top: 0.3rem; }
+    .math-equation     { font-size: clamp(3rem, 12vw, 5.5rem); line-height: 1.1; }
+
+    /* ---- ENGINEERING QUIZ ---- */
+    .engineering-display { font-size: clamp(6rem, 20vw, 9rem); line-height: 1; margin: 0.2rem 0 0.1rem; text-align: center; color: var(--dark); }
+    .engineering-label   { font-family: 'Varela Round', sans-serif; font-size: clamp(1.4rem, 5vw, 2rem); color: var(--dark); min-height: 2.4rem; margin-bottom: 0.4rem; text-align: center; }
+
+    /* ---- Journey bar ---- */
+    .journey-bar  { width: min(88vw, 340px); margin-bottom: 0.5rem; }
+    .journey-path { display: flex; align-items: center; }
+    .journey-step {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(128,128,128,0.2); border: 3px solid rgba(128,128,128,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: transparent; transition: background 0.3s, border-color 0.3s;
+    }
+    .journey-step.done    { background: var(--green); border-color: var(--green); color: white; animation: stepPop 0.45s ease; }
+    .journey-step.current { background: var(--yellow); border-color: var(--yellow); color: var(--dark); font-size: 16px; animation: avatarBounce 0.9s ease infinite alternate; }
+    .journey-connector      { flex: 1; height: 5px; background: rgba(128,128,128,0.2); border-radius: 2px; }
+    .journey-connector.done { background: var(--green); transition: background 0.35s 0.1s; }
+    .journey-goal      { font-size: 1.7rem; margin-right: 4px; }
+    .journey-goal.celebrate { animation: goalPop 0.75s ease; }
+    @keyframes stepPop      { 0%{transform:scale(1)} 45%{transform:scale(1.7)} 100%{transform:scale(1)} }
+    @keyframes goalPop      { 0%{transform:scale(1) rotate(0deg)} 30%{transform:scale(2.1) rotate(22deg)} 65%{transform:scale(1.6) rotate(-12deg)} 100%{transform:scale(1.3) rotate(0deg)} }
+    @keyframes avatarBounce { from{transform:scale(1)} to{transform:scale(1.25)} }
+
+    /* ---- ONBOARDING ---- */
+    #screen-onboarding {
+      background: linear-gradient(145deg, #080c2a 0%, #1a0a2e 55%, #041a04 100%);
+      overflow-y: auto; justify-content: center; gap: 0;
+    }
+    .ob-step { display: flex; flex-direction: column; align-items: center; width: 100%; animation: obIn 0.4s ease; }
+    .ob-title {
+      font-family: 'Varela Round', sans-serif; font-size: clamp(1.6rem, 6vw, 2.4rem);
+      color: white; margin-bottom: 1.4rem; text-align: center;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .ob-age-grid { display: flex; gap: clamp(0.8rem, 3vw, 1.4rem); justify-content: center; flex-wrap: wrap; }
+    .ob-age-btn {
+      width: clamp(90px, 26vw, 120px); height: clamp(90px, 26vw, 120px);
+      border: none; border-radius: 22px; cursor: pointer;
+      background: rgba(255,255,255,0.11); backdrop-filter: blur(8px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.3rem; transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 22px rgba(255,255,255,0.07), 0 4px 14px rgba(0,0,0,0.35);
+      color: white; font-family: 'Varela Round', sans-serif;
+    }
+    .ob-age-btn:active { transform: scale(0.92); }
+    .ob-age-btn:hover  { box-shadow: 0 0 32px rgba(255,209,100,0.32), 0 4px 14px rgba(0,0,0,0.35); }
+    .ob-emoji     { font-size: clamp(2.4rem, 9vw, 3.6rem); }
+    .ob-age-label { font-size: clamp(1rem, 3.5vw, 1.3rem); font-weight: 700; }
+    .ob-theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(0.6rem, 2.5vw, 1rem); width: min(92vw, 370px); }
+    .ob-theme-card {
+      border: none; border-radius: 14px; cursor: pointer; padding: 0.9rem 0.4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+      transition: transform 0.15s, outline 0.1s; outline: 3px solid transparent;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    }
+    .ob-theme-card:active { transform: scale(0.92); }
+    .ob-theme-card:hover  { outline-color: rgba(255,255,255,0.5); }
+    .ob-theme-emoji { font-size: 2rem; }
+    .ob-theme-name  { font-size: 0.8rem; font-weight: 700; color: white; font-family: 'Varela Round'; text-align: center; }
+    .ob-lang-grid   { display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.4rem; }
+    .ob-lang-btn {
+      min-width: 120px; min-height: 60px; border: 3px solid rgba(255,255,255,0.28);
+      border-radius: 14px; cursor: pointer; background: rgba(255,255,255,0.11);
+      color: white; font-family: 'Varela Round', sans-serif; font-size: 1.1rem;
+      transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    }
+    .ob-lang-btn:active { transform: scale(0.93); }
+    .ob-lang-btn.active { background: rgba(255,255,255,0.22); border-color: var(--yellow); }
+    .ob-lang-btn:disabled{ opacity: 0.38; cursor: default; }
+    .ob-start-btn {
+      margin-top: 0.5rem; padding: 0.8rem 2.4rem; border: none; border-radius: var(--radius);
+      background: var(--yellow); color: var(--dark); font-family: 'Varela Round', sans-serif;
+      font-size: 1.3rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(255,209,102,0.45); transition: transform 0.12s;
+    }
+    .ob-start-btn:active { transform: scale(0.94); }
+    @keyframes obIn  { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes obOut { from{opacity:1;transform:translateY(0)}    to{opacity:0;transform:translateY(-20px)} }
+
+    /* ---- Confetti canvas ---- */
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
+
+    /* ---- Responsive ---- */
+    @media (max-height: 600px) {
+      .quiz-letter { font-size: 5.5rem; }
+      .num-display { font-size: 4rem; }
+      .module-btn  { min-height: 88px; }
+      .ob-age-btn  { width: 80px; height: 80px; }
+    }
+
+    /* ---- HOME WORLD BACKGROUND ---- */
+    .home-world-bg {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+      transition: background 0.6s; border-radius: 0;
+    }
+    .home-deco {
+      position: absolute; pointer-events: none; user-select: none;
+      animation: decoFloat 5s ease-in-out infinite alternate;
+    }
+    @keyframes decoFloat { from { transform: translateY(0) rotate(-3deg); } to { transform: translateY(-16px) rotate(3deg); } }
+    .home-content {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; height: 100%; padding: 0.7rem 1rem 1rem;
+      overflow-y: auto; justify-content: flex-start;
+    }
+
+    /* ---- AGE PILLS ---- */
+    .home-age-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; margin-top: 0.2rem; }
+    .age-pill {
+      padding: 0.3rem 0.85rem; border: 2px solid rgba(128,128,128,0.22);
+      border-radius: 99px; background: var(--bg-surface); color: var(--dark);
+      font-family: 'Varela Round', sans-serif; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .age-pill.active {
+      background: var(--orange); border-color: var(--orange); color: white;
+      box-shadow: 0 3px 10px rgba(255,107,53,0.35);
+    }
+
+    /* ---- MODULE PROGRESS DOTS ---- */
+    .mod-dots { display: flex; gap: 4px; margin-top: 3px; }
+    .mod-dot  { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+    .mod-dot.done { background: rgba(255,255,255,0.9); }
+
+    /* ---- HOME STAT CHIPS ---- */
+    .home-stat-row { display: flex; gap: 0.55rem; margin-top: 0.55rem; flex-wrap: wrap; justify-content: center; }
+    .stat-chip {
+      display: flex; align-items: center; gap: 0.35rem;
+      background: var(--bg-surface); border-radius: 14px; padding: 0.45rem 0.7rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); min-width: 74px;
+    }
+    .stat-chip-icon { font-size: 1.15rem; }
+    .stat-chip-info { display: flex; flex-direction: column; }
+    .stat-chip-val  { font-size: 0.95rem; font-weight: 700; color: var(--dark); line-height: 1.1; }
+    .stat-chip-lbl  { font-size: 0.65rem; color: var(--text-muted); }
+
+    /* ---- TRACING PHASE PILLS ---- */
+    .trace-phase-row { display: flex; gap: 0.4rem; margin-bottom: 0.45rem; }
+    .trace-phase-btn {
+      padding: 0.28rem 0.85rem; border: 2px solid rgba(128,128,128,0.22);
+      border-radius: 99px; background: var(--bg-surface); color: var(--dark);
+      font-family: 'Varela Round', sans-serif; font-size: 0.82rem; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .trace-phase-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+    /* ---- LETTER CHIPS ROW ---- */
+    .letter-chips-row {
+      display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center;
+      max-width: min(92vw, 360px); margin-bottom: 0.35rem;
+    }
+    .letter-chip {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Varela Round', sans-serif; font-size: 1rem; font-weight: 700;
+      background: var(--bg-surface); border: 2px solid rgba(128,128,128,0.15); color: var(--dark);
+    }
+    .letter-chip.done    { background: var(--green);  border-color: var(--green);  color: white; }
+    .letter-chip.current { background: var(--orange); border-color: var(--orange); color: white; animation: avatarBounce 0.9s ease infinite alternate; }
+
+    /* ---- NIKUD TOGGLE ---- */
+    .nikud-toggle-btn {
+      padding: 0.22rem 0.7rem; border: 2px solid rgba(128,128,128,0.18);
+      border-radius: 99px; background: var(--bg-surface); color: var(--text-muted);
+      font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+    }
+    .nikud-toggle-btn.on { border-color: var(--teal); color: var(--teal); }
+
+    /* ---- MEMORY MATCH ---- */
+    .memory-grid {
+      display: grid; gap: 10px; width: min(92vw, 360px); margin: 0.45rem 0;
+    }
+    .memory-card {
+      min-height: 96px; border-radius: 18px; border: 3px solid rgba(128,128,128,0.15);
+      background: var(--bg-surface); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.3rem; transition: transform 0.15s, border-color 0.2s;
+    }
+    .memory-card .mc-front { display: none; align-items: center; justify-content: center; }
+    .memory-card .mc-back  { display: flex; align-items: center; justify-content: center; font-size: 1.9rem; }
+    .memory-card.face-up .mc-front { display: flex; }
+    .memory-card.face-up .mc-back  { display: none; }
+    .memory-card.matched { background: rgba(6,214,160,0.18); border-color: var(--green); animation: stepPop 0.4s ease; }
+    .memory-card.face-up:not(.matched) { border-color: var(--yellow); box-shadow: 0 0 12px rgba(255,209,102,0.38); }
+    .memory-reward {
+      display: none; align-items: center; gap: 0.7rem;
+      background: var(--bg-surface); border-radius: 14px; padding: 0.55rem 0.9rem;
+      width: min(92vw,360px); box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .mr-icon  { font-size: 1.7rem; }
+    .mr-title { font-weight: 800; color: var(--dark); font-size: 0.9rem; }
+    .mr-sub   { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ---- VOICE GAME ---- */
+    .voice-emoji      { font-size: clamp(5rem,18vw,7rem); margin-bottom: 0.3rem; text-align: center; }
+    .voice-task-label { font-size: clamp(0.9rem,3vw,1.1rem); color: var(--text-muted); margin-bottom: 0.5rem; text-align: center; }
+    .voice-mic-orb {
+      width: 120px; height: 120px; border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, rgba(0,180,166,0.5), rgba(0,80,100,0.7));
+      border: 4px solid rgba(0,180,166,0.55);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; margin: 0.3rem auto; cursor: pointer;
+      box-shadow: 0 0 0 14px rgba(0,180,166,0.06), 0 0 0 28px rgba(0,180,166,0.03);
+      transition: box-shadow 0.3s, background 0.3s;
+    }
+    .voice-mic-orb.listening { animation: micPulse 1.4s ease-in-out infinite; }
+    .voice-mic-orb.correct { background: radial-gradient(circle, rgba(6,214,160,0.6), rgba(0,100,70,0.7)); border-color: var(--green); }
+    .voice-mic-orb.wrong   { background: radial-gradient(circle, rgba(239,71,111,0.45), rgba(140,0,40,0.5)); border-color: var(--red); }
+    @keyframes micPulse {
+      0%,100% { box-shadow: 0 0 0 14px rgba(0,180,166,0.06), 0 0 0 28px rgba(0,180,166,0.03); }
+      50%      { box-shadow: 0 0 0 24px rgba(0,180,166,0.13), 0 0 0 48px rgba(0,180,166,0.07); }
+    }
+    .voice-bubbles {
+      display: flex; gap: 0.55rem; flex-wrap: wrap; justify-content: center;
+      width: min(92vw,360px); margin-top: 0.5rem;
+    }
+    .voice-bubble {
+      min-height: 96px; border-radius: 99px; padding: 0.45rem 0.9rem;
+      font-family: 'Varela Round', sans-serif; font-size: clamp(1rem,4vw,1.3rem);
+      background: var(--bg-surface); border: 3px solid rgba(128,128,128,0.18); color: var(--dark);
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center;
+      flex: 1 1 calc(33% - 0.55rem);
+    }
+    .voice-bubble:active { transform: scale(0.93); }
+    .voice-bubble.correct { background: var(--green);  border-color: var(--green);  color: white; }
+    .voice-bubble.reveal  { background: var(--yellow); border-color: var(--yellow); color: var(--dark); }
+    .voice-result {
+      display: none; font-family: 'Varela Round', sans-serif;
+      font-size: 1.2rem; font-weight: 700; text-align: center;
+      padding: 0.45rem 1.1rem; border-radius: 99px; margin-top: 0.45rem;
+    }
+    .voice-result.correct { background: rgba(6,214,160,0.15); color: var(--green); }
+    .voice-result.wrong   { background: rgba(239,71,111,0.15); color: var(--red); }
+
+    /* ---- SMALL WIN SCREEN ---- */
+    #screen-small-win {
+      background: radial-gradient(ellipse at 50% 30%, #eafaf5 0%, #d0f5ec 50%, #b0eedd 100%);
+      gap: 0.7rem;
+    }
+    .small-win-char  { font-size: 5rem; }
+    .small-win-title { font-family:'Varela Round',sans-serif; font-size:clamp(1.5rem,5.5vw,2rem); color:var(--dark); text-align:center; }
+    .small-win-msg   { font-size: 0.95rem; color: var(--text-muted); text-align: center; max-width: 270px; line-height: 1.6; }
+    .small-win-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; width: min(92vw, 310px); }
+    .sw-card {
+      background: white; border-radius: 18px; padding: 0.9rem 0.7rem;
+      text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      cursor: pointer; border: none; transition: transform 0.12s;
+      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+      min-height: 96px; justify-content: center;
+    }
+    .sw-card:active { transform: scale(0.93); }
+    .sw-card-icon   { font-size: 2.1rem; }
+    .sw-card-name   { font-size: 0.9rem; font-weight: 700; color: var(--dark); }
+    .small-win-back {
+      padding: 0.65rem 2rem; border: none; border-radius: 99px;
+      background: var(--green); color: white; font-family: 'Varela Round', sans-serif;
+      font-size: 1rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(6,214,160,0.38); transition: transform 0.12s;
+    }
+    .small-win-back:active { transform: scale(0.94); }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+<div class="stars-badge">⭐ <span id="star-count">0</span></div>
+
+<!-- ============================================================ ONBOARDING ============================================================ -->
+<div class="screen active" id="screen-onboarding">
+
+  <div class="ob-step" id="ob-step-age">
+    <div class="ob-title" data-i18n="obAgeTitle">כמה אתה בן/בת?</div>
+    <div class="ob-age-grid">
+      <button class="ob-age-btn" onclick="Onboard.setAge(0)"><span class="ob-emoji">🐣</span><span class="ob-age-label">3–4</span></button>
+      <button class="ob-age-btn" onclick="Onboard.setAge(1)"><span class="ob-emoji">⭐</span><span class="ob-age-label">5–6</span></button>
+      <button class="ob-age-btn" onclick="Onboard.setAge(2)"><span class="ob-emoji">🚀</span><span class="ob-age-label">7–8</span></button>
+    </div>
+  </div>
+
+  <div class="ob-step" id="ob-step-theme" style="display:none;">
+    <div class="ob-title" data-i18n="obThemeTitle">!בחר עולם</div>
+    <div class="ob-theme-grid" id="ob-theme-grid"></div>
+  </div>
+
+  <div class="ob-step" id="ob-step-lang" style="display:none;">
+    <div class="ob-title" data-i18n="obLangTitle">שפה</div>
+    <div class="ob-lang-grid">
+      <button class="ob-lang-btn active" onclick="Onboard.setLang('he', this)">🇮🇱 עברית</button>
+      <button class="ob-lang-btn"        onclick="Onboard.setLang('en', this)">🇺🇸 English</button>
+    </div>
+    <button class="ob-start-btn" data-i18n="obStart" onclick="Onboard.finish()">!בואו נלמד ←</button>
+  </div>
+
+</div>
+
+<!-- ============================================================ HOME ============================================================ -->
+<div class="screen" id="screen-home" style="padding:0;justify-content:flex-start;overflow:hidden;position:relative;">
+  <!-- Themed decorative background layer -->
+  <div class="home-world-bg" id="home-world-bg"></div>
+
+  <!-- Scrollable content over the bg -->
+  <div class="home-content">
+    <!-- Age group selector pills -->
+    <div class="home-age-row" id="home-age-row">
+      <button class="age-pill" data-age="0" onclick="App.setAge(0)">🐣 3–4</button>
+      <button class="age-pill" data-age="1" onclick="App.setAge(1)">⭐ 5–6</button>
+      <button class="age-pill" data-age="2" onclick="App.setAge(2)">🚀 7–8</button>
+    </div>
+
+    <div class="home-title" data-i18n="appName">למד איתי 🎓</div>
+
+    <div class="module-grid">
+      <button class="module-btn btn-letters"     onclick="App.show('letters-quiz')">
+        <span class="icon">א</span>
+        <span class="label" data-i18n="letters">אותיות</span>
+        <div class="mod-dots" data-module="letters"></div>
+      </button>
+      <button class="module-btn btn-numbers"     onclick="App.show('numbers-quiz')">
+        <span class="icon">123</span>
+        <span class="label" data-i18n="numbers">מספרים</span>
+        <div class="mod-dots" data-module="numbers"></div>
+      </button>
+      <button class="module-btn btn-shapes"      onclick="App.show('shapes-quiz')">
+        <span class="icon">■</span>
+        <span class="label" data-i18n="shapes">צורות</span>
+        <div class="mod-dots" data-module="shapes"></div>
+      </button>
+      <button class="module-btn btn-colors"      onclick="App.show('colors-quiz')">
+        <span class="icon">🎨</span>
+        <span class="label" data-i18n="colors">צבעים</span>
+        <div class="mod-dots" data-module="colors"></div>
+      </button>
+      <button class="module-btn btn-math"        onclick="App.show('math-quiz')">
+        <span class="icon">➕</span>
+        <span class="label" data-i18n="math">חשבון</span>
+        <div class="mod-dots" data-module="math"></div>
+      </button>
+      <button class="module-btn btn-engineering" onclick="App.show('engineering-quiz')">
+        <span class="icon">🔧</span>
+        <span class="label" data-i18n="engineering">הנדסה</span>
+        <div class="mod-dots" data-module="engineering"></div>
+      </button>
+      <button class="module-btn btn-trace" style="grid-column:1/-1;" onclick="App.show('letters-trace')">
+        <span class="icon">✍️</span>
+        <span class="label" data-i18n="tracing">כתיבה</span>
+        <div class="mod-dots" data-module="tracing"></div>
+      </button>
+      <button class="module-btn" style="background:#A78BFA;color:white;" onclick="App.show('memory-match')">
+        <span class="icon">🃏</span>
+        <span class="label" data-i18n="memory">זיכרון</span>
+        <div class="mod-dots" data-module="memory"></div>
+      </button>
+      <button class="module-btn" style="background:#00B4D8;color:white;" onclick="App.show('voice-game')">
+        <span class="icon">🎤</span>
+        <span class="label" data-i18n="voice">דיבור</span>
+        <div class="mod-dots" data-module="voice"></div>
+      </button>
+    </div>
+
+    <!-- Stat chips: Stars / Streak / Sessions -->
+    <div class="home-stat-row">
+      <div class="stat-chip">
+        <span class="stat-chip-icon">⭐</span>
+        <div class="stat-chip-info">
+          <span class="stat-chip-val" id="stat-stars">0</span>
+          <span class="stat-chip-lbl" data-i18n="statsStars">כוכבים</span>
+        </div>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-icon">🔥</span>
+        <div class="stat-chip-info">
+          <span class="stat-chip-val" id="stat-streak">0</span>
+          <span class="stat-chip-lbl" data-i18n="statsStreak">רצף</span>
+        </div>
+      </div>
+      <div class="stat-chip">
+        <span class="stat-chip-icon">📅</span>
+        <div class="stat-chip-info">
+          <span class="stat-chip-val" id="stat-sessions">0</span>
+          <span class="stat-chip-lbl" data-i18n="statsSessions">מפגשים</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.6rem;align-items:center;margin-top:0.5rem;">
+      <button class="settings-gear" style="margin-top:0;" id="lang-toggle-btn" onclick="App.toggleLang()" title="Language / שפה">🇮🇱</button>
+      <button class="settings-gear" style="margin-top:0;" onclick="App.toggleSettings()" title="הגדרות הורים">⚙️</button>
+    </div>
+    <div id="settings-panel" style="display:none; margin-top:0.6rem; width:min(90vw,340px);">
+      <div style="background:var(--bg-surface-solid); border-radius:14px; padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,0.18); display:flex; flex-direction:column; gap:0.5rem; align-items:stretch; border:1px solid var(--surface-border);">
+        <label data-i18n="settingsApiLabel" style="font-size:0.85rem; color:var(--text-muted); text-align:right;">מפתח Claude API (לא חובה)</label>
+        <input id="api-key-input" type="password" placeholder="sk-ant-..." dir="ltr" style="padding:0.5rem 0.8rem; border:2px solid #ddd; border-radius:8px; font-size:0.9rem; font-family:monospace;" />
+        <button data-i18n="settingsSave" onclick="App.saveApiKey()" style="padding:0.5rem; background:var(--teal); color:white; border:none; border-radius:8px; font-size:1rem; cursor:pointer; font-family:'Rubik',sans-serif; font-weight:700;">שמור</button>
+        <button data-i18n="settingsChangeAge" onclick="App.showOnboarding()" style="padding:0.4rem; background:none; border:1px solid var(--text-muted); border-radius:8px; font-size:0.9rem; cursor:pointer; color:var(--text-muted); font-family:'Rubik',sans-serif;">שנה גיל / עולם</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ LETTERS QUIZ ============================================================ -->
+<div class="screen" id="screen-letters-quiz">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="letters-journey"></div>
+  <div class="quiz-letter" id="quiz-letter">א</div>
+  <div class="quiz-word"   id="quiz-word"></div>
+  <div class="choices-grid" id="letters-choices"></div>
+</div>
+
+<!-- ============================================================ TRACING ============================================================ -->
+<div class="screen" id="screen-letters-trace">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <!-- Clickable phase pills (replaces static mode badge) -->
+  <div class="trace-phase-row">
+    <button class="trace-phase-btn" id="trace-pill-guided" onclick="Tracing.setMode('guided')" data-i18n-mode="guided">מודרך</button>
+    <button class="trace-phase-btn" id="trace-pill-faded"  onclick="Tracing.setMode('faded')"  data-i18n-mode="faded">דוהה</button>
+    <button class="trace-phase-btn" id="trace-pill-free"   onclick="Tracing.setMode('free')"   data-i18n-mode="free">חופשי</button>
+    <button class="nikud-toggle-btn on" id="nikud-toggle" onclick="Tracing.toggleNikud()">ניקוד ✓</button>
+  </div>
+  <div class="trace-meta" id="trace-letter-display"></div>
+  <!-- Letter chips: session progress -->
+  <div class="letter-chips-row" id="trace-letter-chips"></div>
+  <div class="journey-bar" id="trace-journey"></div>
+  <canvas id="trace-canvas" width="300" height="300"></canvas>
+  <div class="trace-controls">
+    <button class="trace-btn" style="background:var(--red);color:white;"    onclick="Tracing.clear()">נקה</button>
+    <button class="trace-btn" style="background:var(--orange);color:white;" onclick="Tracing.next()">הבא ←</button>
+  </div>
+</div>
+
+<!-- ============================================================ NUMBERS QUIZ ============================================================ -->
+<div class="screen" id="screen-numbers-quiz">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="numbers-journey"></div>
+  <div class="num-display" id="num-display">1</div>
+  <div class="num-emojis"  id="num-emojis"></div>
+  <div class="num-word"    id="num-word"></div>
+  <div class="choices-grid" id="numbers-choices"></div>
+</div>
+
+<!-- ============================================================ SHAPES QUIZ ============================================================ -->
+<div class="screen" id="screen-shapes-quiz">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="shapes-journey"></div>
+  <div class="shape-display" id="shape-display">●</div>
+  <div class="choices-grid" id="shapes-choices"></div>
+</div>
+
+<!-- ============================================================ COLORS QUIZ ============================================================ -->
+<div class="screen" id="screen-colors-quiz">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="colors-journey"></div>
+  <div class="color-display" id="color-display"></div>
+  <div class="color-name-label" id="color-name-label"></div>
+  <div class="choices-grid" id="colors-choices"></div>
+</div>
+
+<!-- ============================================================ MATH QUIZ ============================================================ -->
+<div class="screen" id="screen-math-quiz">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="math-journey"></div>
+  <div class="math-display" id="math-display"></div>
+  <div class="choices-grid" id="math-choices"></div>
+</div>
+
+<!-- ============================================================ ENGINEERING QUIZ ============================================================ -->
+<div class="screen" id="screen-engineering-quiz">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="engineering-journey"></div>
+  <div class="engineering-display" id="engineering-display"></div>
+  <div class="engineering-label"  id="engineering-label"></div>
+  <div class="choices-grid" id="engineering-choices"></div>
+</div>
+
+<!-- ============================================================ MEMORY MATCH ============================================================ -->
+<div class="screen" id="screen-memory-match">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="memory-journey"></div>
+  <div class="memory-grid" id="memory-grid"></div>
+  <div class="memory-reward" id="memory-reward">
+    <div class="mr-icon">🏆</div>
+    <div>
+      <div class="mr-title"></div>
+      <div class="mr-sub"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ VOICE GAME ============================================================ -->
+<div class="screen" id="screen-voice-game">
+  <button class="back-btn" onclick="App.show('home')">←</button>
+  <div class="journey-bar" id="voice-journey"></div>
+  <div class="voice-emoji" id="voice-emoji">🦁</div>
+  <div class="voice-task-label" id="voice-task" data-i18n="voiceTask">מה רואים? אמור בקול!</div>
+  <div class="voice-mic-orb idle" id="voice-mic-orb" onclick="VoiceGame.tapMic()">🎤</div>
+  <div class="voice-bubbles" id="voice-bubbles"></div>
+  <div class="voice-result" id="voice-result"></div>
+</div>
+
+<!-- ============================================================ SMALL WIN ============================================================ -->
+<div class="screen" id="screen-small-win">
+  <div class="small-win-char">🤗</div>
+  <div class="small-win-title" data-i18n="smallWinTitle">הפסקה קטנה!</div>
+  <div class="small-win-msg"   data-i18n="smallWinMsg">בואנו נשחק משחק קל ונחזור</div>
+  <div class="small-win-grid">
+    <button class="sw-card" onclick="App.show('memory-match')">
+      <span class="sw-card-icon">🃏</span>
+      <span class="sw-card-name" data-i18n="memory">זיכרון</span>
+    </button>
+    <button class="sw-card" onclick="App.show('colors-quiz')">
+      <span class="sw-card-icon">🌈</span>
+      <span class="sw-card-name" data-i18n="colors">צבעים</span>
+    </button>
+    <button class="sw-card" onclick="App.show('voice-game')">
+      <span class="sw-card-icon">🎤</span>
+      <span class="sw-card-name" data-i18n="voice">דיבור</span>
+    </button>
+    <button class="sw-card" onclick="App.show('letters-quiz')">
+      <span class="sw-card-icon">🔤</span>
+      <span class="sw-card-name" data-i18n="letters">אותיות</span>
+    </button>
+  </div>
+  <button class="small-win-back" onclick="App.show('home')" data-i18n="smallWinBack">חזרה לבית</button>
+</div>
+
+<!-- ============================================================ Scripts ============================================================ -->
+<script src="i18n/he.js"></script>
+<script src="i18n/en.js"></script>
+<script src="engine/lang.js"></script>
+<script src="engine/speech.js"></script>
+<script src="engine/progress.js"></script>
+<script src="engine/input.js"></script>
+<script src="engine/adaptive.js"></script>
+<script src="engine/claude.js"></script>
+<script src="engine/theme.js"></script>
+<script src="modules/letters.js"></script>
+<script src="modules/numbers.js"></script>
+<script src="modules/shapes.js"></script>
+<script src="modules/colors.js"></script>
+<script src="modules/math.js"></script>
+<script src="modules/engineering.js"></script>
+<script src="modules/memory.js"></script>
+<script src="modules/voice.js"></script>
+
+<script>
+// ============================================================
+// JOURNEY BAR — themed avatar travels the path
+// ============================================================
+const Journey = (() => {
+  let _id = null, _current = 0, _total = 6, _onDone = null;
+
+  function start(containerId, steps, onDone) {
+    _id = containerId; _total = steps; _current = 0; _onDone = onDone || null;
+    _render();
+  }
+
+  function _render() {
+    const el = document.getElementById(_id);
+    if (!el) return;
+    const avatar   = (typeof Theme !== 'undefined') ? Theme.getAvatar() : '★';
+    const complete = _current >= _total;
+    let html = '<div class="journey-path">';
+    for (let i = 0; i < _total; i++) {
+      const done    = i < _current;
+      const current = i === _current && !complete;
+      html += `<div class="journey-step${done?' done':current?' current':''}">${done?'★':current?avatar:''}</div>`;
+      html += `<div class="journey-connector${done?' done':''}"></div>`;
+    }
+    html += `<div class="journey-goal${complete?' celebrate':''}">🏆</div></div>`;
+    el.innerHTML = html;
+  }
+
+  function advance() {
+    _current = Math.min(_current + 1, _total);
+    _render();
+    if (_current >= _total) { if (_onDone) setTimeout(_onDone, 550); return true; }
+    return false;
+  }
+
+  return { start, advance };
+})();
+
+// ============================================================
+// ONBOARD
+// ============================================================
+const Onboard = (() => {
+  function _transition(fromId, toId) {
+    const from = document.getElementById(fromId);
+    const to   = document.getElementById(toId);
+    from.style.animation = 'obOut 0.28s ease forwards';
+    setTimeout(() => {
+      from.style.display = 'none';
+      to.style.display = 'flex';
+      to.style.animation = 'none';
+      to.offsetWidth; // reflow
+      to.style.animation = 'obIn 0.4s ease';
+    }, 260);
+  }
+
+  function _buildThemeGrid() {
+    const grid = document.getElementById('ob-theme-grid');
+    grid.innerHTML = '';
+    Object.entries(Theme.getAll()).forEach(([id, t]) => {
+      const btn = document.createElement('button');
+      btn.className = 'ob-theme-card';
+      btn.style.background = t.dark
+        ? `linear-gradient(145deg, ${t.bg} 0%, ${t.accent}33 100%)`
+        : 'linear-gradient(145deg,#ffe8d0,#fff4e0)';
+      btn.innerHTML = `<span class="ob-theme-emoji">${t.emoji}</span><span class="ob-theme-name">${t.name}</span>`;
+      btn.onclick = () => setTheme(id);
+      grid.appendChild(btn);
+    });
+  }
+
+  function setAge(tier) {
+    localStorage.setItem('ylmd_age', String(tier));
+    Speech.speak(['קטן!', 'מדהים!', 'גדול!'][tier]);
+    _buildThemeGrid();
+    _transition('ob-step-age', 'ob-step-theme');
+  }
+
+  function setTheme(id) {
+    Theme.apply(id);
+    _transition('ob-step-theme', 'ob-step-lang');
+  }
+
+  function setLang(code, btn) {
+    Lang.set(code);
+    document.documentElement.dir = code === 'he' ? 'rtl' : 'ltr';
+    refreshLabels();
+    document.querySelectorAll('.ob-lang-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  function finish() {
+    const s = document.getElementById('screen-onboarding');
+    s.style.animation = 'obOut 0.35s ease forwards';
+    setTimeout(() => App.show('home'), 320);
+  }
+
+  return { setAge, setTheme, setLang, finish };
+})();
+
+// ============================================================
+// LABEL REFRESH — updates all data-i18n elements to current language
+// ============================================================
+function refreshLabels() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const val = Lang.t(el.dataset.i18n);
+    if (val) el.textContent = val;
+  });
+}
+
+// ============================================================
+// APP CONTROLLER
+// ============================================================
+const App = (() => {
+  let active = 'onboarding';
+
+  function show(screen) {
+    if (active === 'letters-trace') Tracing.cleanup();
+    if (active === 'voice-game')    VoiceGame.cleanup();
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('screen-' + screen);
+    if (!el) return;
+    el.classList.add('active');
+    active = screen;
+    if (screen === 'letters-quiz')     LettersQuiz.init();
+    if (screen === 'numbers-quiz')     NumbersQuiz.init();
+    if (screen === 'letters-trace')    Tracing.init();
+    if (screen === 'shapes-quiz')      ShapesQuiz.init();
+    if (screen === 'colors-quiz')      ColorsQuiz.init();
+    if (screen === 'math-quiz')        MathQuiz.init();
+    if (screen === 'engineering-quiz') EngineeringQuiz.init();
+    if (screen === 'memory-match')     MemoryMatch.init();
+    if (screen === 'voice-game')       VoiceGame.init();
+    if (screen === 'small-win')        { refreshLabels(); Confetti.burst(); }
+    if (screen === 'home')             {
+      refreshLabels();
+      _syncLangBtn();
+      _syncAgePills();
+      _renderHomeTheme();
+      _refreshHomeStats();
+      _renderModuleDots();
+      Speech.speak(Lang.t('selectActivity'));
+    }
+  }
+
+  function addStar() {
+    const el = document.getElementById('star-count');
+    el.textContent = parseInt(el.textContent) + 1;
+    el.style.transform = 'scale(1.4)';
+    setTimeout(() => { el.style.transform = ''; }, 250);
+    // Also sync stat chip
+    const stat = document.getElementById('stat-stars');
+    if (stat) stat.textContent = el.textContent;
+  }
+
+  function setAge(tier) {
+    localStorage.setItem('ylmd_age', String(tier));
+    _syncAgePills();
+    Speech.speak(['קטן!', 'מדהים!', 'גדול!'][tier]);
+  }
+
+  function _syncAgePills() {
+    const age = parseInt(localStorage.getItem('ylmd_age') || '0');
+    document.querySelectorAll('.age-pill').forEach(btn => {
+      btn.classList.toggle('active', parseInt(btn.dataset.age) === age);
+    });
+  }
+
+  // Render floating theme emoji decorations on home bg
+  function _renderHomeTheme() {
+    const bg = document.getElementById('home-world-bg');
+    if (!bg) return;
+    const t = Theme.getCurrent();
+    const themeDecos = {
+      default: { gradient: 'linear-gradient(160deg,#ffe8d0 0%,#fff9f0 60%)', decos: ['⭐','🌟','✨'] },
+      space:   { gradient: 'linear-gradient(160deg,#02040f 0%,#080c2a 60%)',  decos: ['🚀','⭐','🌌'] },
+      racing:  { gradient: 'linear-gradient(160deg,#1a0505 0%,#2a0a0a 60%)', decos: ['🏎️','🔥','🏁'] },
+      jungle:  { gradient: 'linear-gradient(160deg,#041a04 0%,#0a2a0a 60%)', decos: ['🦁','🌴','🌿'] },
+      ocean:   { gradient: 'linear-gradient(160deg,#020b18 0%,#041530 60%)', decos: ['🐬','🌊','🐠'] },
+      ninja:   { gradient: 'linear-gradient(160deg,#050505 0%,#0a0a0a 60%)', decos: ['🥷','⚡','🌙'] },
+      pirate:  { gradient: 'linear-gradient(160deg,#1a0f00 0%,#2a1800 60%)', decos: ['🏴‍☠️','⚓','💎'] },
+    };
+    const cfg = themeDecos[t] || themeDecos.default;
+    bg.style.background = cfg.gradient;
+    bg.innerHTML = '';
+    const positions = [
+      { top:'8%',  right:'8%',  delay:'0s',   size:'2.2rem', opacity:0.18 },
+      { top:'18%', left:'6%',   delay:'1.8s', size:'1.8rem', opacity:0.14 },
+      { top:'72%', right:'10%', delay:'3.2s', size:'2.6rem', opacity:0.16 },
+      { top:'60%', left:'5%',   delay:'0.9s', size:'1.6rem', opacity:0.12 },
+    ];
+    cfg.decos.forEach((emoji, i) => {
+      const pos = positions[i % positions.length];
+      const d = document.createElement('div');
+      d.className = 'home-deco';
+      d.textContent = emoji;
+      d.style.cssText = `top:${pos.top};${pos.right?'right:'+pos.right:'left:'+pos.left};font-size:${pos.size};opacity:${pos.opacity};animation-delay:${pos.delay};`;
+      bg.appendChild(d);
+    });
+  }
+
+  // Update stat chips from progress store
+  function _refreshHomeStats() {
+    const stars    = document.getElementById('stat-stars');
+    const streak   = document.getElementById('stat-streak');
+    const sessions = document.getElementById('stat-sessions');
+    if (stars)    stars.textContent    = Progress.getTotalStars();
+    if (streak)   streak.textContent   = Progress.getStreak();
+    if (sessions) sessions.textContent = Progress.getSessions();
+    // Also sync global star badge
+    const badge = document.getElementById('star-count');
+    if (badge)  badge.textContent = Progress.getTotalStars();
+  }
+
+  // Render progress dots on each module card (filled = completions, max 5)
+  function _renderModuleDots() {
+    document.querySelectorAll('.mod-dots').forEach(el => {
+      const mod  = el.dataset.module;
+      const done = Math.min(Progress.getModuleCompletions(mod), 5);
+      el.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        const d = document.createElement('div');
+        d.className = 'mod-dot' + (i < done ? ' done' : '');
+        el.appendChild(d);
+      }
+    });
+  }
+
+  function toggleSettings() {
+    const panel = document.getElementById('settings-panel');
+    const open  = panel.style.display === 'none' || panel.style.display === '';
+    panel.style.display = open ? 'block' : 'none';
+    if (open) document.getElementById('api-key-input').value = Claude.getKey();
+  }
+
+  function saveApiKey() {
+    const key = document.getElementById('api-key-input').value.trim();
+    Claude.setKey(key);
+    document.getElementById('settings-panel').style.display = 'none';
+    Speech.speak(key ? 'נשמר!' : 'מפתח נמחק');
+  }
+
+  function _syncLangBtn() {
+    const btn = document.getElementById('lang-toggle-btn');
+    if (btn) btn.textContent = Lang.isHe() ? '🇮🇱' : '🇺🇸';
+  }
+
+  function toggleLang() {
+    const next = Lang.isHe() ? 'en' : 'he';
+    Lang.set(next);
+    document.documentElement.dir = next === 'he' ? 'rtl' : 'ltr';
+    refreshLabels();
+    _syncLangBtn();
+    Speech.speak(next === 'he' ? 'עברית' : 'English');
+  }
+
+  function showOnboarding() {
+    document.getElementById('settings-panel').style.display = 'none';
+    ['ob-step-age','ob-step-theme','ob-step-lang'].forEach((id, i) => {
+      document.getElementById(id).style.display = i === 0 ? 'flex' : 'none';
+    });
+    document.querySelectorAll('.ob-lang-btn').forEach(b => {
+      const code = b.textContent.trim().startsWith('🇮🇱') ? 'he' : 'en';
+      b.classList.toggle('active', code === Lang.get());
+    });
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-onboarding').classList.add('active');
+    active = 'onboarding';
+  }
+
+  return { show, addStar, setAge, toggleSettings, saveApiKey, showOnboarding, toggleLang };
+})();
+
+// ============================================================
+// CONFETTI
+// ============================================================
+const Confetti = (() => {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx    = canvas.getContext('2d');
+  let particles = [], animId = null;
+  const COLORS  = ['#FF6B35','#FFD166','#06D6A0','#00B4A6','#A78BFA','#EF476F'];
+
+  function _resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+  function burst() {
+    _resize();
+    for (let i = 0; i < 65; i++) {
+      particles.push({
+        x: window.innerWidth * 0.5, y: window.innerHeight * 0.45,
+        vx: (Math.random() - 0.5) * 15, vy: Math.random() * -11 - 3,
+        size: Math.random() * 9 + 5, color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        rot: Math.random() * Math.PI * 2, rotV: (Math.random() - 0.5) * 0.22, life: 1.0,
+      });
+    }
+    if (!animId) _animate();
+  }
+
+  function _animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles = particles.filter(p => p.life > 0.02);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.38; p.rot += p.rotV; p.life -= 0.017;
+      ctx.save(); ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      ctx.restore();
+    });
+    if (particles.length > 0) { animId = requestAnimationFrame(_animate); }
+    else { animId = null; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+
+  window.addEventListener('resize', _resize);
+  return { burst };
+})();
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+
+  Lang.init();
+  document.documentElement.dir = Lang.isHe() ? 'rtl' : 'ltr';
+  Theme.init();
+  Speech.init();
+  Progress.startSession();
+  document.getElementById('star-count').textContent = Progress.getTotalStars();
+  setTimeout(() => Speech.speak(Lang.isHe() ? 'שלום! כמה אתה בן?' : 'Hello! How old are you?'), 500);
+});
+</script>
+</body>
+</html>
