@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Orange rounded background -->
+  <rect width="512" height="512" rx="96" fill="#FF6B35"/>
+  <!-- Subtle inner glow -->
+  <rect width="512" height="512" rx="96" fill="url(#g)" opacity="0.3"/>
+  <defs>
+    <radialGradient id="g" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFD166"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Hebrew letter Lamed (ל) — means "learn" -->
+  <text x="256" y="390"
+    text-anchor="middle"
+    font-size="360"
+    font-family="'Rubik','Varela Round','Arial Hebrew',sans-serif"
+    font-weight="700"
+    fill="white"
+    opacity="0.95">ל</text>
+</svg>
