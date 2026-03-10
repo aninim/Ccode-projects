@@ -66,9 +66,10 @@ const EN = {
   nikudOff: 'Vowels ✗',
 
   // Memory Match
-  memoryTask:     'Find the pairs!',
-  memoryFound:    'Found a pair!',
-  memoryComplete: 'All pairs! Amazing!',
+  memoryTask:      'Find the pairs!',
+  memoryFound:     'Found a pair!',
+  memoryComplete:  'All pairs! Amazing!',
+  memoryPairsLeft: 'pairs left',
 
   // Voice Game
   voiceTask:    "What do you see? Say it out loud!",
