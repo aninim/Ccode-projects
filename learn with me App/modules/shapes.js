@@ -1,24 +1,4 @@
 // ============================================================
-<<<<<<< HEAD
-// SHAPES MODULE — Screen: shapes-quiz
-// 2D shapes for both age tiers, with emoji display
-// ============================================================
-const ShapesQuiz = (() => {
-  const SHAPES = [
-    { shape:'⬤',  name:'עִגּוּל',   nameEn:'Circle'   },
-    { shape:'■',  name:'רִיבּוּעַ',  nameEn:'Square'   },
-    { shape:'▲',  name:'מְשֻׁלָּשׁ', nameEn:'Triangle' },
-    { shape:'▬',  name:'מַלְבֵּן',   nameEn:'Rectangle'},
-    { shape:'⬟',  name:'מְעַיָּן',   nameEn:'Diamond'  },
-    { shape:'⭐', name:'כּוֹכָב',    nameEn:'Star'     },
-    { shape:'❤️', name:'לֵב',       nameEn:'Heart'    },
-    { shape:'🌙', name:'יָרֵחַ',    nameEn:'Moon'     },
-  ];
-
-  let _pool      = [];
-  let _idx       = 0;
-  let _answered  = false;
-=======
 // SHAPES MODULE — Phase 3
 // 6 basic shapes in Hebrew, recognition quiz
 // ============================================================
@@ -36,7 +16,6 @@ const ShapesQuiz = (() => {
   let sessionOrder  = [];
   let currentIdx    = 0;
   let answered      = false;
->>>>>>> fix/bug01-audio01
   let _journeyCount = 0;
 
   function _shuffle(arr) {
@@ -58,25 +37,6 @@ const ShapesQuiz = (() => {
   }
 
   function init() {
-<<<<<<< HEAD
-    _pool         = _shuffle(Adaptive.buildPool('shapes', SHAPES, s => s.nameEn));
-    _idx          = 0;
-    _answered     = false;
-    _journeyCount = 0;
-    Journey.start('shapes-journey', 6, _journeyDone);
-    _render();
-    Speech.speak(Lang.isHe() ? 'איזו צורה?' : 'Which shape?');
-  }
-
-  function _render() {
-    _answered = false;
-    const target = SHAPES[_pool[_idx % _pool.length]];
-
-    document.getElementById('shape-display').textContent = target.shape;
-    Speech.speak(target.name);
-
-    const wrongs  = _shuffle(SHAPES.filter(s => s.nameEn !== target.nameEn)).slice(0, 3);
-=======
     sessionOrder  = _shuffle(Adaptive.buildPool('shapes', SHAPES, s => s.id));
     currentIdx    = 0;
     _journeyCount = 0;
@@ -111,46 +71,20 @@ const ShapesQuiz = (() => {
 
     // 4-choice grid — each button shows a shape character
     const wrongs  = _shuffle(SHAPES.filter(s => s.id !== target.id)).slice(0, 3);
->>>>>>> fix/bug01-audio01
     const choices = _shuffle([target, ...wrongs]);
     const grid    = document.getElementById('shapes-choices');
     grid.innerHTML = '';
     choices.forEach(item => {
       const btn = document.createElement('button');
-<<<<<<< HEAD
-      btn.className   = 'choice-btn';
-      btn.textContent = Lang.isHe() ? item.name : item.nameEn;
-      btn.onclick     = () => _handle(btn, item.nameEn === target.nameEn, target);
-=======
       btn.className      = 'choice-btn';
       btn.style.color    = level >= 1 ? '#888' : item.color;
       btn.style.fontSize = 'clamp(2.2rem, 9vw, 3.5rem)';
       btn.textContent    = item.char;
       btn.onclick        = () => _handleChoice(btn, item.id === target.id, target);
->>>>>>> fix/bug01-audio01
       grid.appendChild(btn);
     });
   }
 
-<<<<<<< HEAD
-  function _handle(btn, isCorrect, target) {
-    if (_answered) return;
-    _answered = true;
-
-    if (isCorrect) {
-      btn.classList.add('correct');
-      Progress.record('shapes', target.nameEn, true);
-      Claude.trackCorrect('shapes', target.nameEn);
-      Speech.speak(Lang.p());
-      App.addStar();
-      Confetti.burst();
-      Journey.advance();
-      setTimeout(() => { btn.classList.remove('correct'); _idx++; _render(); }, 1300);
-    } else {
-      btn.classList.add('wrong');
-      Progress.record('shapes', target.nameEn, false);
-      Claude.trackWrong('shapes', target.nameEn, btn.textContent);
-=======
   function _handleChoice(btn, isCorrect, target) {
     if (answered) return;
     answered = true;
@@ -169,27 +103,16 @@ const ShapesQuiz = (() => {
       btn.classList.add('wrong');
       Progress.record('shapes', target.id, false);
       Claude.trackWrong('shapes', target.id, target.name);
->>>>>>> fix/bug01-audio01
       Speech.speak(Lang.ta());
       setTimeout(() => {
         btn.classList.remove('wrong');
         document.querySelectorAll('#shapes-choices .choice-btn').forEach(b => {
-<<<<<<< HEAD
-          const label = Lang.isHe() ? target.name : target.nameEn;
-          if (b.textContent === label) b.classList.add('correct');
-        });
-        setTimeout(() => {
-          document.querySelectorAll('#shapes-choices .choice-btn').forEach(b => b.classList.remove('correct'));
-          _idx++;
-          _render();
-=======
           if (b.textContent === target.char) b.classList.add('correct');
         });
         setTimeout(() => {
           document.querySelectorAll('#shapes-choices .choice-btn').forEach(b => b.classList.remove('correct'));
           currentIdx++;
           _renderQuestion();
->>>>>>> fix/bug01-audio01
         }, 1000);
       }, 800);
     }

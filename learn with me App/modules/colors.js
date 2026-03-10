@@ -1,26 +1,4 @@
 // ============================================================
-<<<<<<< HEAD
-// COLORS MODULE — Screen: colors-quiz
-// Color swatch display, pick the Hebrew color name
-// ============================================================
-const ColorsQuiz = (() => {
-  const COLORS = [
-    { hex:'#FF3B30', name:'אָדֹם',   nameEn:'Red'    },
-    { hex:'#FF9500', name:'כָּתֹם',  nameEn:'Orange' },
-    { hex:'#FFCC00', name:'צָהֹב',   nameEn:'Yellow' },
-    { hex:'#34C759', name:'יָרֹק',   nameEn:'Green'  },
-    { hex:'#007AFF', name:'כָּחֹל',  nameEn:'Blue'   },
-    { hex:'#AF52DE', name:'סָגֹל',   nameEn:'Purple' },
-    { hex:'#FF2D55', name:'וָרֹד',   nameEn:'Pink'   },
-    { hex:'#A2845E', name:'חוּם',    nameEn:'Brown'  },
-    { hex:'#1C1C1E', name:'שָׁחֹר',  nameEn:'Black'  },
-    { hex:'#F2F2F7', name:'לָבָן',   nameEn:'White'  },
-  ];
-
-  let _pool      = [];
-  let _idx       = 0;
-  let _answered  = false;
-=======
 // COLORS MODULE — Phase 3
 // 8 basic colors in Hebrew, recognition quiz
 // ============================================================
@@ -40,7 +18,6 @@ const ColorsQuiz = (() => {
   let sessionOrder  = [];
   let currentIdx    = 0;
   let answered      = false;
->>>>>>> fix/bug01-audio01
   let _journeyCount = 0;
 
   function _shuffle(arr) {
@@ -58,34 +35,6 @@ const ColorsQuiz = (() => {
     Progress.recordModuleCompletion('colors');
     const msgs = Lang.strings().journeyMsgs;
     Speech.speak(msgs[Math.min(_journeyCount - 1, msgs.length - 1)]);
-<<<<<<< HEAD
-    setTimeout(() => Journey.start('colors-journey', 6, _journeyDone), 1400);
-  }
-
-  function init() {
-    _pool         = _shuffle(Adaptive.buildPool('colors', COLORS, c => c.nameEn));
-    _idx          = 0;
-    _answered     = false;
-    _journeyCount = 0;
-    Journey.start('colors-journey', 6, _journeyDone);
-    _render();
-    Speech.speak(Lang.isHe() ? 'איזה צבע?' : 'Which color?');
-  }
-
-  function _render() {
-    _answered = false;
-    const target = COLORS[_pool[_idx % _pool.length]];
-
-    const swatch = document.getElementById('color-display');
-    swatch.style.background = target.hex;
-    swatch.style.border = target.hex === '#F2F2F7'
-      ? '3px solid rgba(0,0,0,0.15)' : 'none';
-
-    document.getElementById('color-name-label').textContent = '';
-    Speech.speak(target.name);
-
-    const wrongs  = _shuffle(COLORS.filter(c => c.nameEn !== target.nameEn)).slice(0, 3);
-=======
     setTimeout(() => Journey.start('colors-journey', 8, _journeyDone), 1400);
   }
 
@@ -106,7 +55,7 @@ const ColorsQuiz = (() => {
     const nameEl  = document.getElementById('color-name-label');
 
     if (level >= 2) {
-      // Round 3+: Hebrew word only (black text) — must match word to color swatch
+      // Round 3+: Hebrew word only — must match word to color swatch
       display.textContent       = target.name;
       display.style.background  = '#FFF9F0';
       display.style.border      = '3px dashed #ccc';
@@ -137,65 +86,28 @@ const ColorsQuiz = (() => {
 
     // 4-choice grid — each button is a colored swatch
     const wrongs  = _shuffle(COLORS_DATA.filter(c => c.id !== target.id)).slice(0, 3);
->>>>>>> fix/bug01-audio01
     const choices = _shuffle([target, ...wrongs]);
     const grid    = document.getElementById('colors-choices');
     grid.innerHTML = '';
     choices.forEach(item => {
       const btn = document.createElement('button');
-<<<<<<< HEAD
-      btn.className   = 'choice-btn';
-      btn.textContent = Lang.isHe() ? item.name : item.nameEn;
-      btn.onclick     = () => _handle(btn, item.nameEn === target.nameEn, target);
-=======
-      btn.className            = 'color-choice-btn';
+      btn.className            = 'choice-btn';
       btn.style.background     = item.hex;
+      btn.style.minHeight      = '96px';
+      btn.style.border         = '3px solid rgba(255,255,255,0.3)';
       btn.dataset.colorId      = item.id;
       // Level 0: show name label inside swatch
       if (level === 0) {
         const span = document.createElement('span');
-        span.className   = 'color-btn-name';
+        span.style.cssText = 'color:white;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,0.5);font-size:clamp(0.9rem,3.5vw,1.2rem);';
         span.textContent = item.name;
         btn.appendChild(span);
       }
       btn.onclick = () => _handleChoice(btn, item.id === target.id, target);
->>>>>>> fix/bug01-audio01
       grid.appendChild(btn);
     });
   }
 
-<<<<<<< HEAD
-  function _handle(btn, isCorrect, target) {
-    if (_answered) return;
-    _answered = true;
-
-    if (isCorrect) {
-      btn.classList.add('correct');
-      document.getElementById('color-name-label').textContent =
-        Lang.isHe() ? target.name : target.nameEn;
-      Progress.record('colors', target.nameEn, true);
-      Claude.trackCorrect('colors', target.nameEn);
-      Speech.speak(Lang.p());
-      App.addStar();
-      Confetti.burst();
-      Journey.advance();
-      setTimeout(() => { btn.classList.remove('correct'); _idx++; _render(); }, 1300);
-    } else {
-      btn.classList.add('wrong');
-      Progress.record('colors', target.nameEn, false);
-      Claude.trackWrong('colors', target.nameEn, btn.textContent);
-      Speech.speak(Lang.ta());
-      setTimeout(() => {
-        btn.classList.remove('wrong');
-        document.querySelectorAll('#colors-choices .choice-btn').forEach(b => {
-          const label = Lang.isHe() ? target.name : target.nameEn;
-          if (b.textContent === label) b.classList.add('correct');
-        });
-        setTimeout(() => {
-          document.querySelectorAll('#colors-choices .choice-btn').forEach(b => b.classList.remove('correct'));
-          _idx++;
-          _render();
-=======
   function _handleChoice(btn, isCorrect, target) {
     if (answered) return;
     answered = true;
@@ -217,14 +129,13 @@ const ColorsQuiz = (() => {
       Speech.speak(Lang.ta());
       setTimeout(() => {
         btn.classList.remove('wrong');
-        document.querySelectorAll('#colors-choices .color-choice-btn').forEach(b => {
+        document.querySelectorAll('#colors-choices .choice-btn').forEach(b => {
           if (b.dataset.colorId === target.id) b.classList.add('correct');
         });
         setTimeout(() => {
-          document.querySelectorAll('#colors-choices .color-choice-btn').forEach(b => b.classList.remove('correct'));
+          document.querySelectorAll('#colors-choices .choice-btn').forEach(b => b.classList.remove('correct'));
           currentIdx++;
           _renderQuestion();
->>>>>>> fix/bug01-audio01
         }, 1000);
       }, 800);
     }
