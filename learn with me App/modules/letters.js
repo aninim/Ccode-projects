@@ -124,6 +124,7 @@ const LettersQuiz = (() => {
   let sessionOrder = [];
   let currentIdx   = 0;
   let answered     = false;
+  let wrongCount   = 0;  // tracks wrong attempts per question (reset each new question)
 
   function _shuffle(arr) {
     const a = [...arr];
@@ -154,7 +155,8 @@ const LettersQuiz = (() => {
   }
 
   function _renderQuestion() {
-    answered = false;
+    answered   = false;
+    wrongCount = 0;
     const target = LETTERS[sessionOrder[currentIdx % sessionOrder.length]];
     const level  = Math.min(_journeyCount, 2);
 
@@ -205,22 +207,35 @@ const LettersQuiz = (() => {
       const delay = journeyDone ? 2600 : 1300;
       setTimeout(() => { btn.classList.remove('correct'); currentIdx++; _renderQuestion(); }, delay);
     } else {
+      wrongCount++;
       btn.classList.add('wrong');
       Progress.record('letters', target.letter, false);
       Claude.trackWrong('letters', target.letter, target.letter);
       Speech.speak(Lang.ta());
-      // After 800ms reveal correct, then next
-      setTimeout(() => {
-        btn.classList.remove('wrong');
-        document.querySelectorAll('#letters-choices .choice-btn').forEach(b => {
-          if (b.textContent === target.letter) b.classList.add('correct');
-        });
+
+      const age = localStorage.getItem('ylmd_age') || '5-6';
+      const isRetryAllowed = age === '5-6' && wrongCount < 2;
+
+      if (isRetryAllowed) {
+        // Age 5–6, first wrong: flash red then unlock for one retry
         setTimeout(() => {
-          document.querySelectorAll('#letters-choices .choice-btn').forEach(b => b.classList.remove('correct'));
-          currentIdx++;
-          _renderQuestion();
-        }, 1000);
-      }, 800);
+          btn.classList.remove('wrong');
+          answered = false;
+        }, 700);
+      } else {
+        // Age 3–4 (any wrong) or age 5–6 second wrong: reveal correct then advance
+        setTimeout(() => {
+          btn.classList.remove('wrong');
+          document.querySelectorAll('#letters-choices .choice-btn').forEach(b => {
+            if (b.textContent === target.letter) b.classList.add('correct');
+          });
+          setTimeout(() => {
+            document.querySelectorAll('#letters-choices .choice-btn').forEach(b => b.classList.remove('correct'));
+            currentIdx++;
+            _renderQuestion();
+          }, 1000);
+        }, 800);
+      }
     }
   }
 
