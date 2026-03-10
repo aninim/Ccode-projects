@@ -48,8 +48,16 @@ const MemoryMatch = (() => {
   function _journeyDone() {
     _journeyCount++;
     Confetti.burst();
-    Speech.speak(Lang.t('memoryComplete'));
-    setTimeout(() => App.show('home'), 1800);
+    Progress.recordModuleCompletion('memory');
+    Speech.speak(Lang.strings().journeyMsgs[Math.min(_journeyCount - 1, 2)]);
+    setTimeout(() => {
+      pairsFound = 0; flipped = []; matched = []; lockBoard = false;
+      const pool = _getPool(totalPairs);
+      cards = _shuffle([...pool, ...pool]);
+      Journey.start('memory-journey', totalPairs, _journeyDone);
+      _render();
+      Speech.speak(Lang.t('memoryTask'));
+    }, 1400);
   }
 
   function init() {
@@ -113,7 +121,7 @@ const MemoryMatch = (() => {
           Lang.t('memoryFound') + ' +2 ⭐';
         reward.querySelector('.mr-sub').textContent =
           remaining > 0
-            ? (Lang.isHe() ? `${remaining} זוגות נשארו` : `${remaining} pairs left`)
+            ? `${remaining} ${Lang.t('memoryPairsLeft')}`
             : Lang.t('memoryComplete');
       } else {
         reward.style.display = 'none';
@@ -151,10 +159,6 @@ const MemoryMatch = (() => {
       lockBoard = false;
       _render();
       Journey.advance();
-      if (pairsFound >= totalPairs) {
-        Confetti.burst();
-        Progress.recordModuleCompletion('memory');
-      }
     } else {
       // No match — flip back after brief pause
       _render();

@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn With Me — Wireframes v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Varela+Round&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF6B35;
+  --teal: #00B4A6;
+  --yellow: #FFD166;
+  --green: #06D6A0;
+  --red: #EF476F;
+  --dark: #1A1A2E;
+  --gray: #8B8FA8;
+  --white: #FFFFFF;
+  --touch-min: 96px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Rubik',sans-serif;
+  background:#C8C0B6;
+  color:var(--dark);
+  padding:40px 28px 80px;
+}
+
+/* ── doc chrome ── */
+.doc-title{text-align:center;margin-bottom:40px}
+.doc-title h1{font-family:'Varela Round',sans-serif;font-size:30px;color:var(--dark)}
+.doc-title p{font-size:13px;color:var(--gray);margin-top:6px;font-weight:500}
+.sec{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gray);margin:56px 0 18px}
+.row{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;margin-bottom:8px}
+.device{background:#111827;border-radius:38px;padding:16px;
+  box-shadow:0 12px 56px rgba(0,0,0,.38);flex-shrink:0}
+.lbl{text-align:center;font-size:10px;letter-spacing:.12em;color:#666;
+  margin-top:10px;font-weight:700;text-transform:uppercase}
+.screen{border-radius:24px;overflow:hidden;position:relative}
+
+/* notes panel */
+.notes{flex:1;min-width:260px;display:flex;flex-direction:column;gap:12px;justify-content:center}
+.nc{background:#fff;border-radius:20px;padding:18px 20px;
+  box-shadow:0 3px 16px rgba(0,0,0,.09)}
+.nh{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--gray);
+  text-transform:uppercase;margin-bottom:10px}
+.nb{font-size:12.5px;color:var(--dark);line-height:1.9;font-weight:500}
+.tag{display:inline-block;background:var(--yellow);color:var(--dark);
+  font-size:9px;font-weight:800;padding:2px 8px;border-radius:99px;
+  letter-spacing:.06em;text-transform:uppercase}
+
+/* ============================================================
+   SCREEN 0 – THEME SELECTOR
+   ============================================================ */
+.s0{width:360px;height:700px}
+.s0 .bg{
+  width:100%;height:100%;
+  background:radial-gradient(ellipse at 50% 0%,#1e3a5f 0%,#0d1b2e 60%,#050d1a 100%);
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;overflow:hidden;
+}
+/* stars */
+.s0 .star{position:absolute;background:#fff;border-radius:50%;
+  animation:twk 3s infinite alternate}
+@keyframes twk{0%{opacity:.15}100%{opacity:1}}
+/* shooting star */
+.s0 .shoot{
+  position:absolute;top:60px;left:60px;
+  width:80px;height:2px;
+  background:linear-gradient(90deg,transparent,#fff,transparent);
+  animation:shoot 5s 2s infinite;opacity:0;
+  transform:rotate(-30deg)
+}
+@keyframes shoot{0%{opacity:0;transform:translateX(-40px) rotate(-30deg)}
+  10%{opacity:1}30%{opacity:0;transform:translateX(200px) rotate(-30deg)}100%{opacity:0}}
+
+.s0 .headline{
+  font-family:'Varela Round',sans-serif;font-size:22px;color:#fff;
+  margin:30px 0 4px;text-align:center;position:relative;z-index:5
+}
+.s0 .sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px;
+  position:relative;z-index:5;font-weight:500}
+.s0 .grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:13px;padding:0 18px;width:100%;position:relative;z-index:5
+}
+.s0 .tc{
+  border-radius:22px;height:116px;position:relative;overflow:hidden;
+  border:3px solid transparent;cursor:pointer;
+  box-shadow:0 5px 20px rgba(0,0,0,.35)
+}
+.s0 .tc.sel{border-color:var(--yellow);
+  box-shadow:0 0 0 3px rgba(255,209,102,.35),0 5px 20px rgba(0,0,0,.35)}
+.tc-bg{position:absolute;inset:0}
+.tc-em{position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-65%);font-size:46px;
+  filter:drop-shadow(0 3px 8px rgba(0,0,0,.45))}
+.tc-nm{position:absolute;bottom:9px;left:0;right:0;text-align:center;
+  font-family:'Varela Round',sans-serif;font-size:13px;color:#fff;
+  text-shadow:0 1px 5px rgba(0,0,0,.6)}
+.tc-chk{position:absolute;top:8px;right:8px;
+  background:var(--yellow);width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:13px}
+
+/* theme gradients */
+.t-dino .tc-bg{background:linear-gradient(145deg,#1a4a0a,#4a8a1a,#8bc34a)}
+.t-volcano .tc-bg{background:linear-gradient(145deg,#1a0000,#7a1500,#ff4500)}
+.t-ocean .tc-bg{background:linear-gradient(145deg,#003060,#0077b6,#48cae4)}
+.t-space .tc-bg{background:linear-gradient(145deg,#050520,#1a1a6e,#7b2fbe)}
+.t-forest .tc-bg{background:linear-gradient(145deg,#0a1f0a,#1b5e20,#43a047)}
+.t-dragon .tc-bg{background:linear-gradient(145deg,#1a0500,#6b1a00,#ff6d00)}
+
+.s0 .cta{
+  margin:20px 18px 0;width:calc(100% - 36px);
+  background:linear-gradient(135deg,var(--orange),#ff9500);
+  border-radius:99px;padding:20px;
+  font-family:'Varela Round',sans-serif;font-size:20px;
+  color:#fff;text-align:center;
+  box-shadow:0 7px 24px rgba(255,107,53,.5);
+  position:relative;z-index:5;letter-spacing:.02em
+}
+
+/* ============================================================
+   SCREEN 1 – DINO DASHBOARD (immersive bg)
+   ============================================================ */
+.s1{width:380px;height:700px}
+.s1 .bg{width:100%;height:100%;position:relative;overflow:hidden;
+  display:flex;flex-direction:column}
+
+/* layered dino world bg */
+.s1 .sky{position:absolute;inset:0;
+  background:linear-gradient(180deg,#3ab8e8 0%,#7dd4f5 38%,#a8e08a 62%,#5a9e2a 78%,#2d6010 100%)}
+/* clouds */
+.s1 .cl{position:absolute;font-size:32px;opacity:.85;animation:cdrift 20s linear infinite}
+@keyframes cdrift{0%{transform:translateX(0)}100%{transform:translateX(-50px)}}
+/* dino character */
+.s1 .dino{position:absolute;bottom:110px;left:16px;font-size:60px;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));
+  animation:dibob 2.5s ease-in-out infinite}
+@keyframes dibob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+/* volcano */
+.s1 .vlc{position:absolute;bottom:0;right:-10px;font-size:120px;opacity:.55}
+/* lava glow */
+.s1 .lava{
+  position:absolute;bottom:40px;right:25px;
+  width:32px;height:70px;
+  background:linear-gradient(180deg,#ff4500,#ff8c00,#ffd166);
+  clip-path:polygon(20% 0%,80% 0%,100% 100%,0% 100%);
+  animation:lavaglow 1.8s ease-in-out infinite alternate;opacity:.9
+}
+@keyframes lavaglow{0%{opacity:.7;filter:brightness(.9)}100%{opacity:1;filter:brightness(1.25)}}
+/* palm trees */
+.s1 .palm{position:absolute;bottom:62px;font-size:40px;opacity:.7}
+
+/* top bar */
+.s1 .topbar{
+  position:relative;z-index:10;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 18px 0
+}
+/* age selector row */
+.age-row{
+  position:relative;z-index:10;
+  display:flex;justify-content:center;gap:10px;
+  padding:12px 18px 0
+}
+.ap{
+  background:rgba(26,26,46,.45);color:rgba(255,255,255,.75);
+  border-radius:99px;padding:12px 22px;
+  font-family:'Varela Round',sans-serif;font-size:16px;font-weight:700;
+  letter-spacing:.03em;border:2px solid rgba(255,255,255,.12);
+  min-width:80px;text-align:center
+}
+.ap.on{
+  background:#FF6B35;color:#fff;
+  border-color:#FF6B35;
+  box-shadow:0 4px 16px rgba(255,107,53,.45)
+}
+
+/* CORNER LANG FAB — appears on every screen */
+.lang-fab{
+  position:absolute;
+  bottom:14px;
+  left:14px;   /* RTL: bottom-left = start corner */
+  z-index:100;
+  background:rgba(255,255,255,.93);
+  border:2px solid rgba(0,0,0,.08);
+  border-radius:99px;
+  padding:7px 14px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.04em;
+  color:var(--dark);
+  box-shadow:0 3px 12px rgba(0,0,0,.18);
+  display:flex;align-items:center;gap:6px;
+  cursor:pointer;
+  user-select:none;
+}
+.lang-fab .lang-active{ color:var(--orange); }
+.lang-fab .lang-sep{ opacity:.35; }
+
+.lang-pill{
+  background:rgba(255,255,255,.92);color:var(--dark);
+  border-radius:99px;padding:12px 20px;
+  font-size:15px;font-weight:700;letter-spacing:.05em;
+  box-shadow:0 4px 16px rgba(0,0,0,.15)
+}
+.star-pill{
+  background:rgba(255,209,102,.95);color:var(--dark);
+  border-radius:99px;padding:12px 20px;
+  font-size:15px;font-weight:700;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);
+  display:flex;align-items:center;gap:7px
+}
+
+/* CURVY ROAD */
+.road-wrap{
+  position:relative;z-index:8;
+  height:120px;margin:8px 0 0
+}
+.road-wrap svg{width:100%;height:120px;overflow:visible}
+
+/* activity grid */
+.act-grid{
+  position:relative;z-index:10;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px;padding:14px 16px 0;flex:1
+}
+.acard{
+  background:rgba(255,255,255,.93);
+  border-radius:26px;
+  padding:20px 14px 18px;
+  text-align:center;
+  box-shadow:0 6px 24px rgba(0,0,0,.13);
+  backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  min-height:112px
+}
+.acard.locked{opacity:.5}
+.ai{font-size:46px;line-height:1}
+.an{font-family:'Varela Round',sans-serif;font-size:18px;color:var(--dark)}
+.adots{display:flex;gap:5px;margin-top:4px}
+.pd{width:8px;height:8px;border-radius:50%;background:#e8e8f0}
+.pd.done{background:var(--green)}
+.pd.now{background:var(--orange)}
+
+/* bottom stat chips */
+.stat-row{
+  position:relative;z-index:10;
+  display:flex;gap:10px;padding:12px 16px 18px
+}
+.sc{
+  flex:1;background:rgba(255,255,255,.9);
+  border-radius:18px;padding:12px;
+  display:flex;align-items:center;gap:9px;
+  box-shadow:0 3px 12px rgba(0,0,0,.1)
+}
+.si{font-size:22px}
+.sv{font-size:15px;font-weight:700;color:var(--dark)}
+.sl{font-size:10px;color:var(--gray);font-weight:500}
+
+/* ============================================================
+   SCREEN 2 – ANIMATED ROAD (landscape close-up)
+   ============================================================ */
+.s2{width:720px;height:210px}
+.s2 .bg{
+  width:100%;height:100%;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#7dd4f5 0%,#a8e08a 55%,#5a9e2a 80%,#2d6010 100%)
+}
+.s2 .t{position:absolute;bottom:62px;font-size:36px}
+.s2 .rc{position:absolute;top:8px;font-size:22px;opacity:.8}
+
+/* road body */
+.road-body-h{
+  position:absolute;bottom:42px;left:20px;right:20px;
+  height:32px;background:#fff;border-radius:99px;
+  border:3px solid rgba(0,0,0,.1);
+  box-shadow:0 5px 14px rgba(0,0,0,.15)
+}
+.road-fill-h{
+  position:absolute;bottom:42px;left:20px;
+  height:32px;width:52%;
+  background:linear-gradient(90deg,rgba(6,214,160,.4),rgba(0,180,166,.3));
+  border-radius:99px 0 0 99px
+}
+.road-dashes-h{
+  position:absolute;bottom:56px;left:40px;right:40px;
+  display:flex;justify-content:space-between;align-items:center
+}
+.rdash{width:24px;height:4px;background:rgba(0,0,0,.12);border-radius:99px}
+
+/* milestones */
+.ms{position:absolute;bottom:64px;font-size:28px;
+  filter:drop-shadow(0 3px 7px rgba(0,0,0,.28))}
+/* car */
+.car-h{
+  position:absolute;bottom:62px;font-size:42px;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.3));
+  animation:carbounce .4s ease-in-out infinite alternate
+}
+@keyframes carbounce{0%{transform:translateY(0) rotate(-1deg)}100%{transform:translateY(-4px) rotate(1deg)}}
+
+/* ============================================================
+   SCREEN 3 – VOLCANO TRACING
+   ============================================================ */
+.s3{width:360px;height:700px}
+.s3 .bg{
+  width:100%;height:100%;
+  background:linear-gradient(180deg,#1a0000 0%,#3d0d00 40%,#6b1a00 70%,#8b3500 100%);
+  display:flex;flex-direction:column;position:relative;overflow:hidden
+}
+/* ember particles */
+.ember{
+  position:absolute;border-radius:50%;
+  animation:floatup linear infinite
+}
+@keyframes floatup{0%{transform:translateY(0) scale(1);opacity:.9}
+  100%{transform:translateY(-750px) scale(.3);opacity:0}}
+
+.s3 .topbar2{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 20px 10px
+}
+.back-big{
+  width:70px;height:70px;min-width:70px;
+  background:rgba(255,255,255,.12);
+  border:2px solid rgba(255,255,255,.22);
+  border-radius:20px;display:flex;align-items:center;
+  justify-content:center;font-size:28px;color:#fff
+}
+.dragonfly{
+  font-size:52px;
+  filter:drop-shadow(0 0 16px rgba(255,120,0,.85));
+  animation:df 3s ease-in-out infinite
+}
+@keyframes df{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.fire-stars{display:flex;gap:9px}
+.fs{font-size:28px}
+
+/* canvas */
+.trace-canvas{
+  margin:8px 18px 0;
+  background:rgba(0,0,0,.42);
+  border-radius:26px;height:268px;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(255,107,53,.4);
+  backdrop-filter:blur(5px);
+  position:relative;overflow:hidden;z-index:10
+}
+.ltr-ghost{
+  font-family:'Varela Round',sans-serif;
+  font-size:180px;color:rgba(255,107,53,.12);
+  line-height:1;user-select:none;position:absolute
+}
+.dot-start{
+  position:absolute;top:44px;right:62px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 18px rgba(6,214,160,.9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#fff;font-weight:800
+}
+.trace-hint{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:9px;
+  background:rgba(255,107,53,.22);
+  border:1px solid rgba(255,107,53,.5);
+  border-radius:99px;padding:10px 20px
+}
+.th-txt{font-size:14px;font-weight:700;color:var(--yellow)}
+
+.phase-pills{
+  display:flex;gap:11px;padding:16px 18px 0;
+  position:relative;z-index:10;justify-content:center
+}
+.pp{
+  padding:14px 22px;border-radius:99px;
+  font-size:15px;font-weight:700;
+  background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);
+  border:2px solid rgba(255,255,255,.1)
+}
+.pp.on{
+  background:rgba(255,107,53,.9);color:#fff;
+  border-color:rgba(255,107,53,.9);
+  box-shadow:0 4px 18px rgba(255,107,53,.5)
+}
+
+.letter-row{
+  display:flex;gap:12px;padding:16px 18px 0;
+  justify-content:center;position:relative;z-index:10
+}
+.lc{
+  width:72px;height:72px;
+  background:rgba(255,255,255,.08);border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Varela Round',sans-serif;font-size:28px;
+  color:rgba(255,255,255,.4);
+  border:2px solid rgba(255,255,255,.1)
+}
+.lc.done{background:rgba(6,214,160,.18);border-color:var(--green);color:var(--green)}
+.lc.now{background:rgba(255,107,53,.28);border-color:var(--orange);color:#fff;
+  box-shadow:0 0 18px rgba(255,107,53,.4)}
+
+.praise{
+  margin:16px 18px 0;padding:16px 20px;
+  background:linear-gradient(135deg,rgba(255,107,53,.32),rgba(200,60,0,.18));
+  border:1px solid rgba(255,107,53,.42);border-radius:20px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;z-index:10
+}
+.pt{font-size:16px;font-weight:800;color:var(--yellow)}
+
+/* ============================================================
+   SCREEN 4 – SPACE MATH LAB (landscape)
+   ============================================================ */
+.s4{width:720px;height:460px}
+.s4 .bg{
+  width:100%;height:100%;
+  background:radial-gradient(ellipse at 30% 50%,#0a1240 0%,#02060f 100%);
+  display:flex;position:relative;overflow:hidden
+}
+.sstar{position:absolute;background:#fff;border-radius:50%;animation:twk 3s infinite alternate}
+.planet{
+  position:absolute;top:-20px;right:-20px;
+  width:170px;height:170px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#9b59b6,#4a1580,#190028);
+  box-shadow:0 0 50px rgba(155,89,182,.35),inset -20px -20px 40px rgba(0,0,0,.5)
+}
+.ring{
+  position:absolute;top:35px;right:-50px;
+  width:240px;height:52px;
+  border:9px solid rgba(155,89,182,.3);
+  border-radius:50%;transform:rotate(-16deg)
+}
+/* left side */
+.s4 .left{
+  width:50%;padding:30px 26px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;z-index:10
+}
+.math-q{
+  font-family:'Varela Round',sans-serif;font-size:78px;
+  color:#fff;text-align:center;line-height:1;
+  text-shadow:0 0 40px rgba(255,255,255,.25);margin-bottom:10px
+}
+.math-q .qm{color:var(--yellow);text-shadow:0 0 24px rgba(255,209,102,.7)}
+.math-inst{font-size:15px;color:rgba(255,255,255,.55);font-weight:500;margin-bottom:26px}
+.num-line{
+  width:100%;background:rgba(255,255,255,.07);
+  border-radius:99px;padding:9px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border:1px solid rgba(255,255,255,.1)
+}
+.nl{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;
+  color:rgba(255,255,255,.45);background:rgba(255,255,255,.07)
+}
+.nl.ans{background:var(--yellow);color:var(--dark);box-shadow:0 0 16px rgba(255,209,102,.6)}
+.nl-dash{flex:1;height:2px;background:rgba(255,255,255,.1);margin:0 3px}
+
+/* right camera side */
+.s4 .right{
+  width:50%;border-right:1px solid rgba(255,255,255,.07);
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;justify-content:center
+}
+.cam-lbl{
+  position:absolute;top:16px;left:16px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  border-radius:99px;padding:7px 16px;
+  font-size:11px;color:rgba(255,255,255,.65);font-weight:600;
+  letter-spacing:.08em;display:flex;align-items:center;gap:7px
+}
+.recdot{width:9px;height:9px;border-radius:50%;background:var(--red);animation:rblink 1s step-end infinite}
+@keyframes rblink{0%,100%{opacity:1}50%{opacity:0}}
+.hand-gfx{font-size:100px;opacity:.35;color:var(--teal);margin-bottom:8px;
+  filter:drop-shadow(0 0 28px rgba(0,180,166,.5))}
+.finger-res{
+  background:rgba(255,209,102,.14);border:2px solid var(--yellow);
+  border-radius:18px;padding:12px 32px;
+  font-family:'Varela Round',sans-serif;font-size:32px;
+  color:var(--yellow);font-weight:700
+}
+.stab{position:absolute;bottom:26px;left:22px;right:22px}
+.stab-lbl{font-size:10px;color:rgba(255,255,255,.38);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.stab-bar{height:8px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.stab-fill{height:100%;width:70%;
+  background:linear-gradient(90deg,var(--teal),var(--yellow));
+  border-radius:99px}
+
+/* ============================================================
+   SCREEN 5 – OCEAN VOICE GAME
+   ============================================================ */
+.s5{width:360px;height:700px}
+.s5 .bg{
+  width:100%;height:100%;
+  background:linear-gradient(180deg,#005f8a 0%,#0099cc 28%,#00b4d8 56%,#90e0ef 80%,#ffecd2 100%);
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;overflow:hidden
+}
+.wave{
+  position:absolute;left:-10px;right:-10px;height:70px;
+  background:rgba(255,255,255,.14);border-radius:50%
+}
+.fish{position:absolute;font-size:30px;animation:swim linear infinite}
+@keyframes swim{0%{transform:translateX(-60px)}100%{transform:translateX(420px)}}
+
+.s5 .subj-area{
+  position:relative;z-index:10;
+  padding:26px 22px 0;width:100%;text-align:center
+}
+.subj-emoji{font-size:90px;filter:drop-shadow(0 6px 16px rgba(0,0,0,.2));margin-bottom:6px}
+.subj-title{font-family:'Varela Round',sans-serif;font-size:21px;color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.subj-sub{font-size:14px;color:rgba(255,255,255,.7);font-weight:500;margin-top:4px}
+
+/* big mic */
+.mic-orb{
+  position:relative;z-index:10;
+  width:150px;height:150px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%,rgba(255,255,255,.35),rgba(0,160,210,.68));
+  border:4px solid rgba(255,255,255,.65);
+  display:flex;align-items:center;justify-content:center;
+  font-size:70px;margin:22px auto 0;
+  box-shadow:0 0 0 18px rgba(255,255,255,.07),
+             0 0 0 36px rgba(255,255,255,.04),
+             0 8px 32px rgba(0,0,0,.2);
+  animation:orbp 2s ease-in-out infinite
+}
+@keyframes orbp{
+  0%,100%{box-shadow:0 0 0 18px rgba(255,255,255,.07),0 0 0 36px rgba(255,255,255,.04),0 8px 32px rgba(0,0,0,.2)}
+  50%{box-shadow:0 0 0 26px rgba(255,255,255,.11),0 0 0 52px rgba(255,255,255,.06),0 8px 32px rgba(0,0,0,.2)}
+}
+/* sound wave */
+.sw{display:flex;align-items:center;gap:5px;height:42px;
+  position:relative;z-index:10;margin:14px auto 0}
+.swb{width:6px;border-radius:99px;background:rgba(255,255,255,.65);
+  animation:swbar .8s ease-in-out infinite alternate}
+.swb:nth-child(1){height:13px;animation-delay:0s}
+.swb:nth-child(2){height:26px;animation-delay:.1s}
+.swb:nth-child(3){height:40px;animation-delay:.2s}
+.swb:nth-child(4){height:22px;animation-delay:.3s}
+.swb:nth-child(5){height:36px;animation-delay:.4s}
+.swb:nth-child(6){height:17px;animation-delay:.5s}
+.swb:nth-child(7){height:30px;animation-delay:.6s}
+@keyframes swbar{0%{transform:scaleY(.3)}100%{transform:scaleY(1)}}
+
+/* word bubbles */
+.bubbles{
+  display:flex;gap:12px;padding:20px 18px 0;
+  justify-content:center;flex-wrap:wrap;
+  position:relative;z-index:10
+}
+.wb{
+  background:rgba(255,255,255,.9);
+  border-radius:99px;padding:18px 28px;
+  font-family:'Varela Round',sans-serif;font-size:21px;color:var(--dark);
+  box-shadow:0 5px 18px rgba(0,0,0,.12);
+  min-width:120px;text-align:center;
+  min-height:var(--touch-min);display:flex;align-items:center;justify-content:center
+}
+.wb.ok{background:var(--green);color:#fff;box-shadow:0 5px 20px rgba(6,214,160,.45)}
+.wb.no{background:var(--red);  color:#fff;box-shadow:0 5px 20px rgba(239,71,111,.35)}
+
+/* ============================================================
+   SCREEN 6 – FOREST MEMORY MATCH
+   ============================================================ */
+.s6{width:360px;height:700px}
+.s6 .bg{
+  width:100%;height:100%;
+  background:linear-gradient(180deg,#0d1f0a 0%,#1b4332 38%,#2d6a4f 68%,#52b788 100%);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden
+}
+.s6 .treeline{position:absolute;bottom:0;left:0;right:0;
+  display:flex;justify-content:space-around;pointer-events:none}
+.s6 .tr{font-size:52px;opacity:.25}
+.ff{position:absolute;width:7px;height:7px;border-radius:50%;
+  background:#ffd166;box-shadow:0 0 12px #ffd166;
+  animation:ffly 4s ease-in-out infinite alternate}
+@keyframes ffly{0%{transform:translate(0,0) scale(.4);opacity:.2}
+  100%{transform:translate(22px,-34px) scale(1);opacity:.95}}
+
+.s6 .top3{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 18px 10px
+}
+.owl{font-size:50px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));
+  animation:owlsway 3s ease-in-out infinite}
+@keyframes owlsway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.hearts{display:flex;gap:8px}
+.hrt{font-size:26px}
+.task-bub{
+  position:relative;z-index:10;
+  background:rgba(255,255,255,.1);border:2px solid rgba(255,220,100,.3);
+  border-radius:22px;padding:16px 22px;margin:0 18px;text-align:center
+}
+.tb-main{font-family:'Varela Round',sans-serif;font-size:24px;color:#fff}
+.tb-sub{font-size:14px;color:rgba(255,255,255,.5);margin-top:3px}
+
+/* 2×4 card grid */
+.match-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:14px;padding:16px 18px 0;width:100%;
+  position:relative;z-index:10
+}
+.mc{
+  background:rgba(255,255,255,.1);
+  border-radius:24px;height:116px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:50px;
+  border:3px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 0 24px rgba(0,0,0,.2)
+}
+.mc.sel{border-color:var(--yellow);background:rgba(255,209,102,.14);
+  box-shadow:0 0 22px rgba(255,209,102,.3)}
+.mc.mat{border-color:var(--green);background:rgba(6,214,160,.14);
+  box-shadow:0 0 22px rgba(6,214,160,.28)}
+.mc.face{background:linear-gradient(135deg,rgba(255,107,53,.18),rgba(200,60,0,.12))}
+
+.match-reward{
+  position:relative;z-index:10;
+  margin:14px 18px 0;
+  background:linear-gradient(135deg,rgba(255,107,53,.28),rgba(180,50,0,.16));
+  border:2px solid rgba(255,107,53,.4);border-radius:22px;
+  padding:16px 20px;display:flex;align-items:center;gap:16px
+}
+.mr-icon{font-size:38px}
+.mr-title{font-size:15px;font-weight:800;color:var(--yellow)}
+.mr-sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+
+/* ============================================================
+   SCREEN 7 – BEACH / COLORS DRAG & DROP
+   ============================================================ */
+.s7{width:360px;height:700px}
+.s7 .bg{
+  width:100%;height:100%;
+  background:linear-gradient(180deg,#1a9bc7 0%,#59d2f0 32%,#90e0ef 55%,#ffe0a0 75%,#f5c97a 100%);
+  display:flex;flex-direction:column;align-items:center;
+  position:relative;overflow:hidden
+}
+/* waves */
+.bwave{position:absolute;left:-10px;right:-10px;height:60px;
+  background:rgba(255,255,255,.2);border-radius:50%}
+/* seagulls */
+.gull{position:absolute;font-size:20px;animation:gullfly 14s linear infinite;opacity:.7}
+@keyframes gullfly{0%{transform:translateX(-40px)}100%{transform:translateX(420px)}}
+.sun{position:absolute;top:16px;right:20px;font-size:50px;
+  animation:sunrot 20s linear infinite}
+@keyframes sunrot{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+.s7 .top7{
+  position:relative;z-index:10;width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 18px 0
+}
+.crab{font-size:50px;animation:grabsway 2s ease-in-out infinite}
+@keyframes grabsway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+
+.color-task{
+  position:relative;z-index:10;
+  text-align:center;padding:10px 24px 0
+}
+.ct-main{font-family:'Varela Round',sans-serif;font-size:24px;color:var(--dark);
+  text-shadow:0 2px 6px rgba(255,255,255,.6)}
+.ct-sub{font-size:14px;color:rgba(26,26,46,.6);font-weight:500;margin-top:3px}
+
+/* big draggable shape */
+.drag-zone{
+  position:relative;z-index:10;
+  margin:16px 18px 0;
+  background:rgba(255,255,255,.7);border-radius:26px;
+  height:170px;display:flex;align-items:center;justify-content:center;
+  border:3px dashed rgba(26,26,46,.18);backdrop-filter:blur(8px)
+}
+.drag-shape{font-size:100px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.15))}
+
+/* color answer row */
+.color-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:12px;padding:14px 18px 0;width:100%;
+  position:relative;z-index:10
+}
+.copt{
+  height:84px;border-radius:24px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  font-family:'Varela Round',sans-serif;font-size:20px;color:#fff;
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  border:3px solid rgba(255,255,255,.15)
+}
+.copt.pick{border-color:var(--yellow);box-shadow:0 0 24px rgba(255,209,102,.45)}
+.csw{width:34px;height:34px;border-radius:12px;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.3)}
+
+/* ============================================================
+   SCREEN 8 – DRAGON MOOD / SMALL WIN
+   ============================================================ */
+.s8{width:360px;height:700px}
+.s8 .bg{
+  width:100%;height:100%;
+  background:radial-gradient(ellipse at 50% 30%,#eafaf5 0%,#d0f5ec 40%,#b0eedd 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:18px;padding:30px 26px;
+  position:relative;overflow:hidden
+}
+.mood-confetti{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+.conf{position:absolute;animation:conffall linear infinite;font-size:18px}
+@keyframes conffall{0%{transform:translateY(-30px) rotate(0deg);opacity:1}
+  100%{transform:translateY(750px) rotate(720deg);opacity:0}}
+.mood-character{font-size:90px;filter:drop-shadow(0 8px 22px rgba(6,214,160,.3))}
+.mood-title{font-family:'Varela Round',sans-serif;font-size:26px;color:var(--dark);text-align:center}
+.mood-msg{font-size:15px;color:var(--gray);text-align:center;font-weight:500;line-height:1.7;max-width:280px}
+.win-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.wc{background:#fff;border-radius:24px;padding:22px 18px;
+  text-align:center;box-shadow:0 6px 22px rgba(0,0,0,.1)}
+.wci{font-size:44px;display:block;margin-bottom:8px}
+.wcn{font-size:16px;font-weight:700;color:var(--dark)}
+.mood-cta{
+  background:linear-gradient(135deg,var(--green),#00a87a);
+  color:#fff;border-radius:99px;padding:18px 42px;
+  font-family:'Varela Round',sans-serif;font-size:20px;
+  box-shadow:0 6px 22px rgba(6,214,160,.4);width:100%;text-align:center
+}
+
+/* ============================================================
+   COLOR / SYSTEM LEGEND
+   ============================================================ */
+.legend{background:#fff;border-radius:26px;padding:22px 28px;
+  box-shadow:0 4px 22px rgba(0,0,0,.1);display:flex;flex-wrap:wrap;gap:14px 30px;margin-top:10px}
+.li{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--dark);font-weight:500}
+.ls{width:18px;height:18px;border-radius:6px}
+</style>
+</head>
+<body>
+
+<div class="doc-title">
+  <h1>🦕 Learn With Me — Wireframes v2</h1>
+  <p>Immersive Themes · Animated Road · Big Touch Targets · 8 Screens · March 2026</p>
+</div>
+
+<!-- ═══════════════════ SCREEN 0: THEME PICKER ═══════════════════ -->
+<div class="sec">Screen 0 — Theme Selector</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s0">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <!-- stars -->
+          <div class="star" style="width:2px;height:2px;top:6%;left:14%;animation-delay:0s"></div>
+          <div class="star" style="width:3px;height:3px;top:12%;left:70%;animation-delay:.5s"></div>
+          <div class="star" style="width:2px;height:2px;top:5%;left:42%;animation-delay:1s"></div>
+          <div class="star" style="width:2px;height:2px;top:20%;left:28%;animation-delay:1.5s"></div>
+          <div class="star" style="width:3px;height:3px;top:9%;left:86%;animation-delay:.8s"></div>
+          <div class="star" style="width:2px;height:2px;top:26%;left:56%;animation-delay:.3s"></div>
+          <div class="shoot"></div>
+          <div class="headline">🌍 בחר את העולם שלך!</div>
+          <div class="sub">Choose your world</div>
+          <div class="grid">
+            <div class="tc t-dino sel">
+              <div class="tc-bg"></div>
+              <div class="tc-em">🦕</div>
+              <div class="tc-nm">דינוזאורים</div>
+              <div class="tc-chk">✓</div>
+            </div>
+            <div class="tc t-volcano">
+              <div class="tc-bg"></div>
+              <div class="tc-em">🌋</div>
+              <div class="tc-nm">הר הגעש</div>
+            </div>
+            <div class="tc t-ocean">
+              <div class="tc-bg"></div>
+              <div class="tc-em">🐠</div>
+              <div class="tc-nm">אוקיינוס</div>
+            </div>
+            <div class="tc t-space">
+              <div class="tc-bg"></div>
+              <div class="tc-em">🚀</div>
+              <div class="tc-nm">חלל</div>
+            </div>
+            <div class="tc t-forest">
+              <div class="tc-bg"></div>
+              <div class="tc-em">🦉</div>
+              <div class="tc-nm">יער קסום</div>
+            </div>
+            <div class="tc t-dragon">
+              <div class="tc-bg"></div>
+              <div class="tc-em">🐉</div>
+              <div class="tc-nm">דרקונים</div>
+            </div>
+          </div>
+          <div class="cta">בוא נתחיל! 🎉</div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Theme Picker</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Theme Engine</div>
+      <div class="nb">Theme changes: sky, ground, mascot, road character, sound effects, praise text, particle effects<br><br>
+        <b>6 themes at launch:</b><br>
+        🦕 Dinos · 🌋 Volcano · 🐠 Ocean<br>
+        🚀 Space · 🦉 Forest · 🐉 Dragons<br><br>
+        Unlock new theme every <b>10 ⭐</b>
+      </div>
+    </div>
+    <div class="nc"><div class="nh">Card Size <span class="tag">116px tall</span></div>
+      <div class="nb">Each tile = 116px tall — wide tap zone for small hands<br>
+        2-col grid, 13px gap<br>
+        CTA button = 60px tall, full width
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 1: DINO DASHBOARD ═══════════════════ -->
+<div class="sec">Screen 1 — Dino World Dashboard</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s1">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="sky"></div>
+          <div class="cl" style="top:55px;left:10px">☁️</div>
+          <div class="cl" style="top:40px;left:130px;animation-delay:3s">⛅</div>
+          <div class="cl" style="top:65px;left:260px;animation-delay:7s">☁️</div>
+          <div class="dino">🦕</div>
+          <div class="vlc">🌋</div>
+          <div class="lava"></div>
+          <div class="palm" style="left:180px">🌴</div>
+
+          <div class="topbar">
+            <span class="lang-pill">🇮🇱 / 🇺🇸</span>
+            <div class="star-pill">⭐ <span>87</span></div>
+          </div>
+
+          <!-- AGE GROUP SELECTOR -->
+          <div class="age-row">
+            <div class="ap">8–7</div>
+            <div class="ap on">6–5</div>
+            <div class="ap">4–3</div>
+          </div>
+          <div class="road-wrap">
+            <svg viewBox="0 0 380 120" preserveAspectRatio="none">
+              <path d="M10,98 Q75,22 152,72 Q225,118 295,52 Q340,18 372,62"
+                fill="none" stroke="rgba(0,0,0,.13)" stroke-width="32" stroke-linecap="round"/>
+              <path d="M10,98 Q75,22 152,72 Q225,118 295,52 Q340,18 372,62"
+                fill="none" stroke="white" stroke-width="28" stroke-linecap="round"/>
+              <path d="M10,98 Q75,22 152,72 Q225,118 295,52 Q340,18 372,62"
+                fill="none" stroke="rgba(6,214,160,.4)" stroke-width="28" stroke-linecap="round"
+                stroke-dasharray="195,600"/>
+              <path d="M10,98 Q75,22 152,72 Q225,118 295,52 Q340,18 372,62"
+                fill="none" stroke="rgba(0,0,0,.1)" stroke-width="3"
+                stroke-dasharray="15,20" stroke-linecap="round"/>
+            </svg>
+            <div style="position:absolute;top:52px;left:128px;font-size:24px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.3))">🪙</div>
+            <div style="position:absolute;top:76px;left:210px;font-size:24px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.3))">🪙</div>
+            <div style="position:absolute;top:12px;left:288px;font-size:22px;filter:drop-shadow(0 2px 5px rgba(0,0,0,.3))">🏁</div>
+            <div style="position:absolute;top:46px;left:96px;font-size:34px;animation:carbounce .4s ease-in-out infinite alternate;filter:drop-shadow(0 4px 8px rgba(0,0,0,.28))">🚗</div>
+          </div>
+
+          <div class="act-grid">
+            <div class="acard">
+              <div class="ai">🔤</div>
+              <div class="an">אותיות</div>
+              <div class="adots"><div class="pd done"></div><div class="pd done"></div><div class="pd now"></div><div class="pd"></div><div class="pd"></div></div>
+            </div>
+            <div class="acard">
+              <div class="ai">🔢</div>
+              <div class="an">מספרים</div>
+              <div class="adots"><div class="pd done"></div><div class="pd now"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div></div>
+            </div>
+            <div class="acard">
+              <div class="ai">✏️</div>
+              <div class="an">כתיבה</div>
+              <div class="adots"><div class="pd now"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div><div class="pd"></div></div>
+            </div>
+            <div class="acard locked">
+              <div class="ai">🔬</div>
+              <div class="an">סטם 🔒</div>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div class="sc"><span class="si">⭐</span><div><div class="sv">87</div><div class="sl">כוכבים</div></div></div>
+            <div class="sc"><span class="si">📅</span><div><div class="sv">14</div><div class="sl">מפגשים</div></div></div>
+            <div class="sc"><span class="si">🔥</span><div><div class="sv">3</div><div class="sl">רצף</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Dino World Dashboard</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Immersive Background</div>
+      <div class="nb">
+        Sky gradient → grass → earth layered<br>
+        Dino mascot bobs in corner (CSS keyframe)<br>
+        Volcano silhouette + dripping lava<br>
+        Clouds drift left slowly<br>
+        All purely CSS — no images needed
+      </div>
+    </div>
+    <div class="nc"><div class="nh">Curvy Road</div>
+      <div class="nb">
+        SVG bezier path — car rides it per progress<br>
+        Green fill advances per correct answer<br>
+        Coins at milestones, flag at level end<br>
+        Car character matches theme:<br>
+        🚗 Dino · 🚀 Space · 🐟 Ocean · 🐉 Dragon
+      </div>
+    </div>
+    <div class="nc"><div class="nh">Touch Targets <span class="tag">112px min</span></div>
+      <div class="nb">Activity cards = 112px tall<br>Stat chips = 58px tall<br>14px gap between all cards</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 2: ROAD CLOSE-UP ═══════════════════ -->
+<div class="sec">Screen 2 — Animated Progress Road (Landscape Close-Up)</div>
+<div class="row">
+  <div>
+    <div class="device" style="background:#222">
+      <div class="screen s2">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="rc" style="left:18px;top:10px">☁️</div>
+          <div class="rc" style="left:170px;top:14px">⛅</div>
+          <div class="rc" style="left:510px;top:8px">☁️</div>
+          <div class="s2 t" style="left:14px">🌴</div>
+          <div class="s2 t" style="left:110px">🌳</div>
+          <div class="s2 t" style="left:248px">🌴</div>
+          <div class="s2 t" style="left:395px">🌲</div>
+          <div class="s2 t" style="left:535px">🌳</div>
+          <div class="s2 t" style="left:635px">🌴</div>
+          <div class="road-body-h"></div>
+          <div class="road-fill-h"></div>
+          <div class="road-dashes-h">
+            <div class="rdash"></div><div class="rdash"></div><div class="rdash"></div>
+            <div class="rdash"></div><div class="rdash"></div><div class="rdash"></div>
+            <div class="rdash"></div><div class="rdash"></div>
+          </div>
+          <div class="ms" style="left:18px">🏳️</div>
+          <div class="ms" style="left:148px">🪙</div>
+          <div class="ms" style="left:288px">⭐</div>
+          <div class="ms" style="left:436px">🪙</div>
+          <div class="ms" style="right:18px">🏁</div>
+          <div class="car-h" style="left:336px">🚗</div>
+          <div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);
+            background:rgba(0,0,0,.6);border-radius:99px;padding:5px 18px;
+            font-size:11px;color:#fff;font-weight:700;letter-spacing:.08em;white-space:nowrap;z-index:5">
+            Car sprite matches theme · Green fill = progress · Coins = milestones
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Road Progress Bar — Landscape</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Animation Spec</div>
+      <div class="nb">
+        🚗 Car bounces 0.4s loop<br>
+        🪙 Coins sparkle on collection<br>
+        🌿 Fill grows per correct answer<br>
+        🎉 Level done → car zooms + confetti burst<br>
+        All CSS keyframes — no JS animation lib
+      </div>
+    </div>
+    <div class="nc"><div class="nh">Theme Characters</div>
+      <div class="nb">
+        🦕 Dino World → red car 🚗<br>
+        🚀 Space → rocket 🚀<br>
+        🐠 Ocean → fish 🐟<br>
+        🌋 Volcano → fireball 🔥<br>
+        🦉 Forest → fox 🦊<br>
+        🐉 Dragon → dragon 🐉
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 3: VOLCANO TRACING ═══════════════════ -->
+<div class="sec">Screen 3 — Letter Tracing (Volcano / Dragon Theme)</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s3">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="ember" style="width:9px;height:9px;background:#ff4500;left:18%;bottom:0;animation-duration:4.2s;animation-delay:0s"></div>
+          <div class="ember" style="width:6px;height:6px;background:#ff8c00;left:52%;bottom:0;animation-duration:5.1s;animation-delay:1.1s"></div>
+          <div class="ember" style="width:11px;height:11px;background:#ffd166;left:74%;bottom:0;animation-duration:3.8s;animation-delay:2.2s"></div>
+          <div class="ember" style="width:7px;height:7px;background:#ff4500;left:36%;bottom:0;animation-duration:6s;animation-delay:.6s"></div>
+          <div class="ember" style="width:5px;height:5px;background:#ff6d00;left:88%;bottom:0;animation-duration:4.5s;animation-delay:1.8s"></div>
+
+          <div class="topbar2">
+            <div class="back-big">←</div>
+            <div class="dragonfly">🐉</div>
+            <div class="fire-stars"><span class="fs">🔥</span><span class="fs">🔥</span><span class="fs">⭐</span></div>
+          </div>
+
+          <div style="text-align:center;padding:6px 20px 8px;position:relative;z-index:10">
+            <div style="font-family:'Varela Round',sans-serif;font-size:24px;color:var(--yellow)">עקוב אחרי האות</div>
+          </div>
+
+          <div class="trace-canvas">
+            <div class="ltr-ghost">א</div>
+            <div class="dot-start">①</div>
+            <div class="trace-hint">
+              <span style="font-size:22px">☝️</span>
+              <span class="th-txt">גרור את האצבע</span>
+            </div>
+          </div>
+
+          <div class="phase-pills">
+            <div class="pp on">מודרך</div>
+            <div class="pp">חצי</div>
+            <div class="pp">חופשי</div>
+          </div>
+
+          <div class="letter-row">
+            <div class="lc done">ב</div>
+            <div class="lc now">א</div>
+            <div class="lc">ג</div>
+            <div class="lc">ד</div>
+          </div>
+
+          <div class="praise">
+            <span style="font-size:30px">🔥</span>
+            <span class="pt">האות בוערת! כל הכבוד!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Tracing — Volcano Theme</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Back Button <span class="tag">70×70px</span></div>
+      <div class="nb">70×70px square — easy for shaky hands<br>Phase pills = 52px tall ✅<br>Letter chips = 72×72px ✅</div>
+    </div>
+    <div class="nc"><div class="nh">Theme Praise Text</div>
+      <div class="nb">🌋 "האות בוערת!" (the letter burns!)<br>🚀 "השקת רקטה!" (rocket launched!)<br>🦕 "הדינו שמח!" (dino is happy!)<br>🐠 "הדגה שוחה!" (fish is swimming!)<br>Same logic — brand new feel per world</div>
+    </div>
+    <div class="nc"><div class="nh">Ember Particles</div>
+      <div class="nb">5 floating embers, CSS only<br>Low opacity so canvas stays readable<br>Dragon mascot floats + rotates above canvas</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 4: SPACE MATH ═══════════════════ -->
+<div class="sec">Screen 4 — Finger Count Math (Space Theme · Landscape)</div>
+<div class="row">
+  <div>
+    <div class="device" style="background:#080818">
+      <div class="screen s4">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="sstar" style="width:2px;height:2px;top:12%;left:15%;animation-delay:0s"></div>
+          <div class="sstar" style="width:3px;height:3px;top:28%;left:8%;animation-delay:.7s"></div>
+          <div class="sstar" style="width:2px;height:2px;top:62%;left:22%;animation-delay:1.2s"></div>
+          <div class="sstar" style="width:2px;height:2px;top:42%;left:44%;animation-delay:.4s"></div>
+          <div class="sstar" style="width:3px;height:3px;top:72%;left:36%;animation-delay:1.8s"></div>
+          <div class="sstar" style="width:2px;height:2px;top:18%;left:62%;animation-delay:.9s"></div>
+          <div class="planet"></div>
+          <div class="ring"></div>
+
+          <div class="left">
+            <div class="math-q">2 + 1 = <span class="qm">?</span></div>
+            <div class="math-inst">🚀 הרם אצבעות בפני המצלמה</div>
+            <div class="num-line">
+              <div class="nl">1</div><div class="nl-dash"></div>
+              <div class="nl">2</div><div class="nl-dash"></div>
+              <div class="nl ans">3</div><div class="nl-dash"></div>
+              <div class="nl">4</div><div class="nl-dash"></div>
+              <div class="nl">5</div>
+            </div>
+          </div>
+
+          <div class="right">
+            <div class="cam-lbl"><span class="recdot"></span>מצלמה פעילה</div>
+            <div class="hand-gfx">✋</div>
+            <div class="finger-res">3 אצבעות 🌟</div>
+            <div class="stab">
+              <div class="stab-lbl">יציבות — 1.5 שניות</div>
+              <div class="stab-bar"><div class="stab-fill"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Space Math Lab — Landscape</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">1.5s Stability Timer</div>
+      <div class="nb">Prevents accidental triggers from moving fingers<br>Bar fills before answer locks in<br>Audio tick reinforces countdown<br>Bar turns green at confirm</div>
+    </div>
+    <div class="nc"><div class="nh">Planet Decoration</div>
+      <div class="nb">Purple planet + ring in top-right<br>Star field twinkles in bg<br>Number line becomes "launch pad"<br>All purely CSS — no external assets</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 5: OCEAN VOICE GAME ═══════════════════ -->
+<div class="sec">Screen 5 — Say the Word! Voice Game (Ocean Theme) ✨ New</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s5">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="wave" style="bottom:165px"></div>
+          <div class="wave" style="bottom:115px"></div>
+          <div class="fish" style="bottom:185px;animation-duration:9s"></div>
+          <div class="fish" style="bottom:220px;font-size:22px;animation-duration:13s;animation-delay:4s"></div>
+          <div class="fish" style="bottom:155px;font-size:26px;animation-duration:11s;animation-delay:7s">🦑</div>
+
+          <div class="subj-area">
+            <div class="subj-emoji">🦀</div>
+            <div class="subj-title">מה זה?</div>
+            <div class="subj-sub">Say the word out loud</div>
+          </div>
+
+          <div class="mic-orb">🎤</div>
+
+          <div class="sw">
+            <div class="swb"></div><div class="swb"></div><div class="swb"></div>
+            <div class="swb"></div><div class="swb"></div><div class="swb"></div>
+            <div class="swb"></div>
+          </div>
+
+          <div class="bubbles">
+            <div class="wb ok">סַרְטָן</div>
+            <div class="wb">כֶּלֶב</div>
+            <div class="wb">חָתוּל</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Voice Game — Ocean Theme</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Mic Orb <span class="tag">150×150px</span></div>
+      <div class="nb">Giant orb = easy tap even for 3-year-olds<br>Pulse animation = "I'm listening"<br>Sound bars animate during recognition<br>3 word bubbles = touch fallback</div>
+    </div>
+    <div class="nc"><div class="nh">Speech Logic</div>
+      <div class="nb">Web Speech API `he-IL`<br>Mispronunciation → soft redirect, no buzzer<br>Word bubbles show nikud (Hebrew vowels)<br>Subject emoji = 90px — clear visual target</div>
+    </div>
+    <div class="nc"><div class="nh">Word Bubble <span class="tag">96px tall</span></div>
+      <div class="nb">Each bubble = min 96px tall<br>Rounded pill shape — kid-friendly<br>Green on correct, red on wrong (brief)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 6: FOREST MEMORY MATCH ═══════════════════ -->
+<div class="sec">Screen 6 — Memory Match (Forest Theme) ✨ New</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s6">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="treeline">
+            <div class="tr">🌲</div><div class="tr">🌳</div>
+            <div class="tr">🌴</div><div class="tr">🌲</div>
+            <div class="tr">🌳</div>
+          </div>
+          <div class="ff" style="top:28%;left:13%;animation-delay:0s"></div>
+          <div class="ff" style="top:48%;left:77%;animation-delay:1.3s"></div>
+          <div class="ff" style="top:22%;left:62%;animation-delay:2.6s"></div>
+          <div class="ff" style="top:64%;left:32%;animation-delay:.9s"></div>
+
+          <div class="top3">
+            <div class="back-big" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff">←</div>
+            <div class="owl">🦉</div>
+            <div class="hearts"><span class="hrt">❤️</span><span class="hrt">❤️</span><span class="hrt">🖤</span></div>
+          </div>
+
+          <div class="task-bub">
+            <div class="tb-main">מצא את הזוגות!</div>
+            <div class="tb-sub">Find the matching pairs</div>
+          </div>
+
+          <div class="match-grid">
+            <div class="mc">🦁</div>
+            <div class="mc face">🃏</div>
+            <div class="mc sel">🦊</div>
+            <div class="mc sel">🦊</div>
+            <div class="mc mat">🐧</div>
+            <div class="mc mat">🐧</div>
+            <div class="mc face">🃏</div>
+            <div class="mc face">🃏</div>
+          </div>
+
+          <div class="match-reward">
+            <div class="mr-icon">🏆</div>
+            <div>
+              <div class="mr-title">מצאת זוג! +2 ⭐</div>
+              <div class="mr-sub">3 זוגות נשארו</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Memory Match — Forest Theme</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Card Size <span class="tag">116px tall</span></div>
+      <div class="nb">Cards = 116px × full width col<br>3px border feedback for selected / matched<br>2×4 grid · 14px gap · no cramping</div>
+    </div>
+    <div class="nc"><div class="nh">Adaptive Difficulty</div>
+      <div class="nb">Ages 3–4: 4 cards (2 pairs)<br>Ages 5–6: 8 cards (4 pairs)<br>Ages 7–8: 12 cards (6 pairs)<br>Used as "Small Win" mood recovery game</div>
+    </div>
+    <div class="nc"><div class="nh">Card Content by Mode</div>
+      <div class="nb">Animals · Hebrew letters · Shapes · Colors<br>Numbers (match digit to dots)<br>Word + image pairs (older kids)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 7: BEACH COLORS ═══════════════════ -->
+<div class="sec">Screen 7 — Shapes & Colors Drag Drop (Beach Theme) ✨ New</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s7">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="bwave" style="bottom:192px"></div>
+          <div class="bwave" style="bottom:148px"></div>
+          <div class="sun"></div>
+          <div class="gull" style="bottom:320px;animation-duration:10s">🕊️</div>
+          <div class="gull" style="bottom:360px;font-size:16px;animation-duration:14s;animation-delay:5s">🕊️</div>
+
+          <div class="top7">
+            <div class="back-big" style="background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.5);color:var(--dark)">←</div>
+            <div class="crab">🦀</div>
+            <div class="star-pill">⭐ <span>12</span></div>
+          </div>
+
+          <div class="color-task">
+            <div class="ct-main">איזה צֶבַע? מה הצוּרָה?</div>
+            <div class="ct-sub">What color? What shape?</div>
+          </div>
+
+          <div class="drag-zone">
+            <div class="drag-shape">🔷</div>
+          </div>
+
+          <div class="color-grid">
+            <div class="copt" style="background:linear-gradient(135deg,#c0392b,#922b21)">
+              <div class="csw" style="background:#ff4444"></div>אָדֹם
+            </div>
+            <div class="copt pick" style="background:linear-gradient(135deg,#2471a3,#1a5276)">
+              <div class="csw" style="background:#4488ff"></div>כָּחֹל
+            </div>
+            <div class="copt" style="background:linear-gradient(135deg,#239b56,#1e8449)">
+              <div class="csw" style="background:#44cc66"></div>יָרֹק
+            </div>
+            <div class="copt" style="background:linear-gradient(135deg,#d4ac0d,#b7950b)">
+              <div class="csw" style="background:#ffaa00"></div>צָהֹב
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Colors & Shapes — Beach Theme</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Color Buttons <span class="tag">84px tall</span></div>
+      <div class="nb">Color IS the button background<br>Hebrew word + color swatch side-by-side<br>2×2 grid · 12px gap<br>Gold border on selected state</div>
+    </div>
+    <div class="nc"><div class="nh">3 Learning Phases</div>
+      <div class="nb">Phase 1: "What color?" → 4 color options<br>Phase 2: "What shape?" → 4 shape options<br>Phase 3: "Find a blue triangle in your room!" → camera PBE mission</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 8: MOOD / SMALL WIN ═══════════════════ -->
+<div class="sec">Screen 8 — Emotional Support / Small Win State ✨ New</div>
+<div class="row">
+  <div>
+    <div class="device">
+      <div class="screen s8">
+        <div class="bg">
+          <div class="lang-fab"><span class="lang-active">עב</span><span class="lang-sep">|</span><span>EN</span></div>
+          <div class="mood-confetti">
+            <div class="conf" style="left:10%;animation-duration:3s;animation-delay:0s">🎊</div>
+            <div class="conf" style="left:30%;animation-duration:4s;animation-delay:.5s">⭐</div>
+            <div class="conf" style="left:55%;animation-duration:3.5s;animation-delay:1s">🎉</div>
+            <div class="conf" style="left:75%;animation-duration:4.5s;animation-delay:.3s">✨</div>
+            <div class="conf" style="left:88%;animation-duration:3.2s;animation-delay:1.5s">🌟</div>
+          </div>
+          <div class="mood-character">🤗</div>
+          <div class="mood-title">הפסקה קטנה!</div>
+          <div class="mood-msg">ראיתי שקצת קשה לך עכשיו.<br>בואנו נשחק משחק קל ונחזור 💚</div>
+          <div class="win-grid">
+            <div class="wc"><span class="wci">🃏</span><span class="wcn">זיכרון</span></div>
+            <div class="wc"><span class="wci">🎵</span><span class="wcn">שיר</span></div>
+            <div class="wc"><span class="wci">🌈</span><span class="wcn">צבעים</span></div>
+            <div class="wc"><span class="wci">⭐</span><span class="wcn">כוכבים שלי</span></div>
+          </div>
+          <div class="mood-cta">בחר משחק!</div>
+        </div>
+      </div>
+    </div>
+    <div class="lbl">Mood Recovery — Small Win</div>
+  </div>
+  <div class="notes">
+    <div class="nc"><div class="nh">Trigger Conditions</div>
+      <div class="nb">CV detects frown / sadness<br>OR 2 consecutive wrong answers<br>OR touch idle &gt;5 seconds<br>→ System enters "Small Win" mode</div>
+    </div>
+    <div class="nc"><div class="nh">Design Intent</div>
+      <div class="nb">Never show "wrong" — reframe as a break<br>Confetti falls = celebration not pity<br>Return to main flow after 1 win<br>Tone: warm, upbeat, never condescending<br>Game cards = 90px tall ✅</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ COLOR LEGEND ═══════════════════ -->
+<div class="sec">Design Tokens</div>
+<div class="legend">
+  <div class="li"><div class="ls" style="background:#FF6B35"></div>Orange — Primary CTA</div>
+  <div class="li"><div class="ls" style="background:#00B4A6"></div>Teal — Secondary</div>
+  <div class="li"><div class="ls" style="background:#FFD166"></div>Yellow — Stars / Accent</div>
+  <div class="li"><div class="ls" style="background:#06D6A0"></div>Green — Correct</div>
+  <div class="li"><div class="ls" style="background:#EF476F"></div>Red — Wrong (brief)</div>
+  <div class="li"><div class="ls" style="background:#1A1A2E"></div>Dark Navy — Text</div>
+  <div class="li"><div class="ls" style="background:#FFF9F0;border:1px solid #ddd"></div>Warm Off-White — BG</div>
+  <div class="li"><div class="ls" style="background:#8B8FA8"></div>Gray — Labels</div>
+</div>
+
+<!-- ═══════════════════ ACTIVITY MAP ═══════════════════ -->
+<div class="sec">Activity Map — 8 Activities × 6 Themes</div>
+<div style="background:#fff;border-radius:26px;padding:24px 28px;box-shadow:0 4px 22px rgba(0,0,0,.1)">
+  <table style="width:100%;border-collapse:collapse;font-family:Rubik,sans-serif;font-size:13px">
+    <thead>
+      <tr style="border-bottom:2px solid #f0f0f8">
+        <th style="text-align:right;padding:9px 12px;font-size:10px;letter-spacing:.12em;color:#8B8FA8;font-weight:800;text-transform:uppercase">Activity</th>
+        <th style="padding:9px 8px;font-size:11px;color:#8B8FA8;font-weight:700;text-align:center">🦕</th>
+        <th style="padding:9px 8px;font-size:11px;color:#8B8FA8;font-weight:700;text-align:center">🌋</th>
+        <th style="padding:9px 8px;font-size:11px;color:#8B8FA8;font-weight:700;text-align:center">🐠</th>
+        <th style="padding:9px 8px;font-size:11px;color:#8B8FA8;font-weight:700;text-align:center">🚀</th>
+        <th style="padding:9px 8px;font-size:11px;color:#8B8FA8;font-weight:700;text-align:center">🦉</th>
+        <th style="padding:9px 8px;font-size:11px;color:#8B8FA8;font-weight:700;text-align:center">🐉</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">✏️ Letter Tracing</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">🔢 Finger Count Math</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">🎤 Say the Word (Voice)</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">🃏 Memory Match</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">🔷 Shapes & Colors</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">🧩 Pattern Puzzle</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td></tr>
+      <tr style="border-bottom:1px solid #f5f5f8"><td style="padding:11px 12px;font-weight:600">🏠 Find It! (Camera PBE)</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td><td style="text-align:center;font-size:11px;color:#8B8FA8">6–8</td></tr>
+      <tr><td style="padding:11px 12px;font-weight:600">🤗 Small Win (Mood)</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td><td style="text-align:center">✅</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;font-size:11px;color:#8B8FA8;font-weight:500">
+    ✅ = all ages 3–8 &nbsp;·&nbsp; 6–8 = older kids only &nbsp;·&nbsp; All activities share the same RTL layout — only theme visuals change
+  </div>
+</div>
+
+</body>
+</html>

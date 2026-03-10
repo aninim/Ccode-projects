@@ -9,7 +9,7 @@
 
 **Name:** Learn With Me
 **Owner:** Oren Elimelech — Father of 3, Petach Tikva, Israel
-**Status:** v0.8 — Phases 1–3 complete + bonus modules (Math, Engineering)
+**Status:** v0.9 — Phases 1–3 + Bonus + Memory Match + Voice Game complete. Home redesign, theme engine, progress engine, tracing improvements done.
 **Goal:** A free, offline-capable Hebrew early education app for ages 3–8. Replaces cheap commercial toys (WinFun et al.) with adaptive, AI-powered, touch/camera/gamepad-native learning. Shareable as a single HTML file or hosted on GitHub Pages.
 
 ---
@@ -84,6 +84,8 @@
 | **6 — AI Layer** | Claude API hints after 2 wrong answers, cached | ⚠️ Partial (limited categories, no error handling) |
 | **7 — English Toggle** | Runtime toggle wired, dir switches RTL↔LTR, all hardcoded strings moved to i18n | ✅ Done |
 | **8 — Distribution** | manifest.json + sw.js exist, GitHub Pages not set up | ⚠️ Partial |
+| **9 — Memory Match + Voice Game** | 2 new modules, home redesign, theme/progress engine, tracing improvements | ✅ Done |
+| **10 — Child Profiles** | profiles.json sidecar + GDrive sync, Profile Selector screen | 🔲 Next |
 
 ---
 
@@ -367,6 +369,9 @@ Learn with me/
 5. **No timers on exercises.**
 6. **Claude API on retry/stuck only.** Never on every question.
 7. **Tracing in `letters.js`**, not a separate module.
+8. **No negative feedback text.** "Wrong" does not exist in the UI — always gentle redirect.
+9. **All sensor data on-device.** No camera/mic data leaves the browser.
+10. **Socratic AI rule.** AI never gives the direct answer — system reveals it after 2 fails, not the AI voice.
 
 ---
 
@@ -377,6 +382,7 @@ Learn with me/
 - In-app purchases or ads
 - Analytics / telemetry / tracking
 - Microsoft ecosystem tools
+- Server-side processing of any kind
 
 ---
 
@@ -407,4 +413,4 @@ Oren is a father of 3 boys, based in Petach Tikva. Background in Product Managem
 
 ---
 
-*Last updated: March 2026 | Spec ref: SPEC_APP.md*
+*Last updated: March 2026 | Ops: PLANNING.md | Design ref: PDD.md*

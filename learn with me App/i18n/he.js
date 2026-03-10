@@ -69,6 +69,7 @@ const HE = {
   memoryTask:      'מצא את הזוגות!',
   memoryFound:     'מצאת זוג!',
   memoryComplete:  'כל הזוגות! מדהים!',
+  memoryPairsLeft: 'זוגות נשארו',
 
   // Voice Game
   voiceTask:    'מה רואים בתמונה? אמור בקול!',
