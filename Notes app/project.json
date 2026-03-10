@@ -1,0 +1,45 @@
+{
+  "name": "second-brain-notes",
+  "displayName": "Second Brain — Notes App",
+  "version": "0.1.0",
+  "phase": 1,
+  "owner": "Oren Elimelech",
+  "stack": ["electron", "react", "vite", "tailwindcss", "node"],
+  "integrations": ["ms-graph", "clickup", "ms-speech-sdk", "copilot-pro", "msal"],
+  "entrypoint": "electron.main.js",
+  "devEntrypoint": "src/App.jsx",
+  "run": "npm run dev",
+  "runElectron": "npm run electron",
+  "build": "npm run build",
+  "test": "vitest",
+  "lint": "eslint src --ext .js,.jsx",
+  "format": "prettier --write src",
+  "storageRoot": "~/SecondBrain",
+  "noteFormats": ["doc_note", "table_note"],
+  "languages": ["en", "he"],
+  "targetPlatforms": ["windows-desktop", "pwa-mobile"],
+  "phaseMap": {
+    "1": "MVP — capture form + local storage + feed view + EOD prompt",
+    "2": "Mobile PWA + voice dictation + EN/HE",
+    "3": "Intelligence views + meeting prep + 1:1 prep",
+    "4": "ClickUp push + triage + reminders + scheduled digests",
+    "5": "HWR OCR + two-way sync + full MS Graph integration"
+  },
+  "teamMembers": ["Oren", "Tom", "Avner", "Eliyahu", "Corinne", "Aviram", "Ayman"],
+  "domains": ["RDS", "ETL", "FDM", "OMPS", "SimRig", "SyntheticData"],
+  "outOfScopeV1": [
+    "cloud-database",
+    "multi-user",
+    "two-way-clickup-sync",
+    "offline-ai",
+    "handwriting-ocr"
+  ],
+  "envRequired": [
+    "CLICKUP_API_KEY",
+    "MS_GRAPH_CLIENT_ID",
+    "MS_GRAPH_TENANT_ID",
+    "AZURE_SPEECH_KEY",
+    "AZURE_SPEECH_REGION",
+    "COPILOT_API_ENDPOINT"
+  ]
+}

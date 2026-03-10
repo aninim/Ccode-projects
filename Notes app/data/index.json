@@ -1,0 +1,13 @@
+{
+  "persons": [
+    { "name": "Oren", "role": "DnV Team Leader", "clickup_user_id": "" },
+    { "name": "Tom", "role": "Engineer", "clickup_user_id": "" },
+    { "name": "Avner", "role": "Data Engineer — RDS/ETL", "clickup_user_id": "" },
+    { "name": "Eliyahu", "role": "Engineer", "clickup_user_id": "" },
+    { "name": "Corinne", "role": "Engineer", "clickup_user_id": "" },
+    { "name": "Aviram", "role": "Engineer — FDM", "clickup_user_id": "" },
+    { "name": "Ayman", "role": "Engineer", "clickup_user_id": "" }
+  ],
+  "projects": ["RDS", "ETL", "FDM", "OMPS", "SimRig", "SyntheticData", "Roadmap"],
+  "domains": ["RDS", "ETL", "FDM", "OMPS", "SimRig", "SyntheticData"]
+}
