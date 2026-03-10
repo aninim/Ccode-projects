@@ -46,7 +46,8 @@ const LETTER_STROKES = {
     [[0.72,0.25],[0.25,0.25],[0.25,0.75],[0.48,0.75]],       // Top-left-down + short foot
   ]},
   'ד': { strokes: [
-    [[0.25,0.25],[0.72,0.25],[0.72,0.75]],                   // Top across, down on right
+    [[0.72,0.25],[0.25,0.25]],                               // Top bar: right→left ✓
+    [[0.72,0.25],[0.72,0.75]],                               // Right vertical: top→bottom
   ]},
   'ה': { strokes: [
     [[0.72,0.25],[0.72,0.75]],                               // Right full vertical
@@ -57,7 +58,7 @@ const LETTER_STROKES = {
     [[0.50,0.22],[0.50,0.80]],                               // Single vertical
   ]},
   'ז': { strokes: [
-    [[0.25,0.25],[0.72,0.25],[0.58,0.80]],                   // Top bar then diagonal
+    [[0.72,0.25],[0.25,0.25],[0.58,0.80]],                   // Top bar right→left, then diagonal ✓
   ]},
   'ח': { strokes: [
     [[0.72,0.25],[0.72,0.75]],                               // Right vertical
@@ -103,10 +104,11 @@ const LETTER_STROKES = {
     [[0.65,0.25],[0.65,0.85]],                               // Right stem below baseline
   ]},
   'ר': { strokes: [
-    [[0.25,0.25],[0.72,0.25],[0.72,0.75]],                   // Same shape as dalet
+    [[0.72,0.25],[0.25,0.25]],                               // Top bar: right→left ✓
+    [[0.72,0.25],[0.72,0.75]],                               // Right vertical: top→bottom
   ]},
   'ש': { strokes: [
-    [[0.22,0.25],[0.78,0.25]],                               // Top horizontal
+    [[0.78,0.25],[0.22,0.25]],                               // Top horizontal: right→left ✓
     [[0.22,0.25],[0.22,0.75]],                               // Left vertical
     [[0.50,0.25],[0.50,0.75]],                               // Middle vertical
     [[0.78,0.25],[0.78,0.75]],                               // Right vertical
@@ -278,23 +280,29 @@ const Tracing = (() => {
   function _onDrawStart(e) {
     isDrawing = true;
     if (scoreTimer) { clearTimeout(scoreTimer); scoreTimer = null; }
-    userPoints.push([e.x, e.y]);
+    // Clamp to canvas bounds — prevents bezier control points going off-canvas
+    const cx = Math.max(0, Math.min(canvasSize - 1, e.x));
+    const cy = Math.max(0, Math.min(canvasSize - 1, e.y));
+    userPoints.push([cx, cy]);
     ctx.globalAlpha = 1.0;
     ctx.strokeStyle = _inkColors[currentIdx % _inkColors.length];
     ctx.lineWidth   = Math.max(7, canvasSize * 0.028);
     ctx.lineCap     = 'round';
     ctx.lineJoin    = 'round';
     ctx.beginPath();
-    ctx.moveTo(e.x, e.y);
+    ctx.moveTo(cx, cy);
   }
   function _onDraw(e) {
     if (!isDrawing) return;
+    // Clamp to canvas bounds — prevents stroke snapping to edge on fast swipes
+    const cx = Math.max(0, Math.min(canvasSize - 1, e.x));
+    const cy = Math.max(0, Math.min(canvasSize - 1, e.y));
     // Quadratic Bezier smoothing: draw through prev point to midpoint.
     // This snaps shaky input into smooth curves in real time.
     const prev = userPoints[userPoints.length - 1];
-    userPoints.push([e.x, e.y]);
-    const midX = (prev[0] + e.x) / 2;
-    const midY = (prev[1] + e.y) / 2;
+    userPoints.push([cx, cy]);
+    const midX = (prev[0] + cx) / 2;
+    const midY = (prev[1] + cy) / 2;
     ctx.quadraticCurveTo(prev[0], prev[1], midX, midY);
     ctx.stroke();
     ctx.beginPath();
