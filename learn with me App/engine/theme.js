@@ -15,10 +15,10 @@ const Theme = (() => {
       cardBg:'linear-gradient(145deg,#1a4a0a,#4a8a1a,#8bc34a)',
       dark:false, avatar:'🦕', accent:'#4CAF50',
       particles:[
-        { e:'☁️', top:'12%', left:'15%', size:'2.2rem', dur:'6s',  delay:'0s',   op:0.75 },
-        { e:'☁️', top:'20%', left:'60%', size:'1.8rem', dur:'8s',  delay:'2s',   op:0.65 },
-        { e:'🍃', top:'55%', left:'72%', size:'1.6rem', dur:'4s',  delay:'1.2s', op:0.55 },
-        { e:'🌿', top:'70%', left:'8%',  size:'1.9rem', dur:'5s',  delay:'3s',   op:0.50 },
+        { e:'☁️', top:'12%', left:'15%', size:'2.2rem', dur:'6s',  delay:'0s',   op:0.75, anim:'cloudDrift' },
+        { e:'☁️', top:'20%', left:'60%', size:'1.8rem', dur:'8s',  delay:'2s',   op:0.65, anim:'cloudDrift' },
+        { e:'🍃', top:'55%', left:'72%', size:'1.6rem', dur:'4s',  delay:'1.2s', op:0.55, anim:'cloudDrift' },
+        { e:'🌿', top:'70%', left:'8%',  size:'1.9rem', dur:'5s',  delay:'3s',   op:0.50, anim:'cloudDrift' },
       ],
       praise:['גאוות הדינוזאורים!','גדול כמו טי-רקס!','דינוזאור אלוף!','וואו, מדהים!','חכם וגדול!']
     },
@@ -30,10 +30,10 @@ const Theme = (() => {
       cardBg:'linear-gradient(145deg,#1a0000,#7a1500,#ff4500)',
       dark:true, avatar:'🌋', accent:'#FF4500',
       particles:[
-        { e:'🔥', top:'30%', left:'20%', size:'1.8rem', dur:'2.5s', delay:'0s',   op:0.80 },
-        { e:'✨', top:'18%', left:'65%', size:'1.4rem', dur:'3s',   delay:'0.8s', op:0.70 },
-        { e:'🔥', top:'62%', left:'78%', size:'2.2rem', dur:'2.2s', delay:'1.5s', op:0.85 },
-        { e:'💫', top:'75%', left:'10%', size:'1.6rem', dur:'3.5s', delay:'0.4s', op:0.60 },
+        { e:'🔥', top:'30%', left:'20%', size:'1.8rem', dur:'2.5s', delay:'0s',   op:0.80, anim:'emberFloat' },
+        { e:'✨', top:'18%', left:'65%', size:'1.4rem', dur:'3s',   delay:'0.8s', op:0.70, anim:'emberFloat' },
+        { e:'🔥', top:'62%', left:'78%', size:'2.2rem', dur:'2.2s', delay:'1.5s', op:0.85, anim:'emberFloat' },
+        { e:'💫', top:'75%', left:'10%', size:'1.6rem', dur:'3.5s', delay:'0.4s', op:0.60, anim:'emberFloat' },
       ],
       praise:['הר הגעש מתפרץ!','לוהט!','כוח אדיר!','אש!','גיבור הלבה!']
     },
@@ -45,10 +45,10 @@ const Theme = (() => {
       cardBg:'linear-gradient(145deg,#003060,#0077b6,#48cae4)',
       dark:true, avatar:'🐬', accent:'#00B4D8',
       particles:[
-        { e:'🐟', top:'25%', left:'18%', size:'1.8rem', dur:'5s',  delay:'0s',   op:0.70 },
-        { e:'💧', top:'15%', left:'70%', size:'1.4rem', dur:'4s',  delay:'1.4s', op:0.55 },
-        { e:'🐚', top:'65%', left:'75%', size:'1.7rem', dur:'6s',  delay:'0.7s', op:0.60 },
-        { e:'🌊', top:'78%', left:'8%',  size:'2rem',   dur:'3.5s',delay:'2.2s', op:0.65 },
+        { e:'🐟', top:'25%', left:'18%', size:'1.8rem', dur:'5s',  delay:'0s',   op:0.70, anim:'fishSwim' },
+        { e:'💧', top:'15%', left:'70%', size:'1.4rem', dur:'4s',  delay:'1.4s', op:0.55, anim:'fishSwim' },
+        { e:'🐚', top:'65%', left:'75%', size:'1.7rem', dur:'6s',  delay:'0.7s', op:0.60, anim:'fishSwim' },
+        { e:'🌊', top:'78%', left:'8%',  size:'2rem',   dur:'3.5s',delay:'2.2s', op:0.65, anim:'fishSwim' },
       ],
       praise:['הדגים שמחים!','מלך האוקיינוס!','גלים מדהימים!','שייט אלוף!','עמוק ומדהים!']
     },
@@ -60,10 +60,10 @@ const Theme = (() => {
       cardBg:'linear-gradient(145deg,#050520,#1a1a6e,#7b2fbe)',
       dark:true, avatar:'🚀', accent:'#6B7FFF',
       particles:[
-        { e:'⭐', top:'12%', left:'22%', size:'1.5rem', dur:'4s',  delay:'0s',   op:0.80 },
-        { e:'🌟', top:'20%', left:'68%', size:'1.8rem', dur:'5s',  delay:'1s',   op:0.75 },
-        { e:'✨', top:'60%', left:'80%', size:'1.3rem', dur:'3.5s',delay:'2s',   op:0.65 },
-        { e:'🌙', top:'72%', left:'5%',  size:'2rem',   dur:'6s',  delay:'0.5s', op:0.60 },
+        { e:'⭐', top:'12%', left:'22%', size:'1.5rem', dur:'4s',  delay:'0s',   op:0.80, anim:'starTwinkle' },
+        { e:'🌟', top:'20%', left:'68%', size:'1.8rem', dur:'5s',  delay:'1s',   op:0.75, anim:'starTwinkle' },
+        { e:'✨', top:'60%', left:'80%', size:'1.3rem', dur:'3.5s',delay:'2s',   op:0.65, anim:'starTwinkle' },
+        { e:'🌙', top:'72%', left:'5%',  size:'2rem',   dur:'6s',  delay:'0.5s', op:0.60, anim:'starTwinkle' },
       ],
       praise:['שיגרת רקטה!','אסטרונאוט אלוף!','סופרנובה!','גלקסיה!','כוכב-על!']
     },
@@ -75,10 +75,10 @@ const Theme = (() => {
       cardBg:'linear-gradient(145deg,#0a1f0a,#1b5e20,#43a047)',
       dark:true, avatar:'🦉', accent:'#66BB6A',
       particles:[
-        { e:'🍃', top:'18%', left:'15%', size:'1.7rem', dur:'4.5s', delay:'0s',   op:0.70 },
-        { e:'🌿', top:'25%', left:'72%', size:'1.5rem', dur:'5.5s', delay:'1.8s', op:0.60 },
-        { e:'🦋', top:'55%', left:'80%', size:'1.6rem', dur:'3.8s', delay:'0.9s', op:0.65 },
-        { e:'🍂', top:'74%', left:'7%',  size:'1.8rem', dur:'4s',   delay:'2.5s', op:0.55 },
+        { e:'🍃', top:'18%', left:'15%', size:'1.7rem', dur:'4.5s', delay:'0s',   op:0.70, anim:'cloudDrift' },
+        { e:'🌿', top:'25%', left:'72%', size:'1.5rem', dur:'5.5s', delay:'1.8s', op:0.60, anim:'cloudDrift' },
+        { e:'🦋', top:'55%', left:'80%', size:'1.6rem', dur:'3.8s', delay:'0.9s', op:0.65, anim:'cloudDrift' },
+        { e:'🍂', top:'74%', left:'7%',  size:'1.8rem', dur:'4s',   delay:'2.5s', op:0.55, anim:'cloudDrift' },
       ],
       praise:['ינשוף חכם!','גיבור היער!','חזק כעץ!','טבע מדהים!','חקרת הכל!']
     },
@@ -90,10 +90,10 @@ const Theme = (() => {
       cardBg:'linear-gradient(145deg,#1a0500,#6b1a00,#ff6d00)',
       dark:true, avatar:'🐉', accent:'#FF6D00',
       particles:[
-        { e:'🔥', top:'15%', left:'20%', size:'1.9rem', dur:'2.8s', delay:'0s',   op:0.80 },
-        { e:'💫', top:'22%', left:'70%', size:'1.5rem', dur:'3.5s', delay:'0.7s', op:0.70 },
-        { e:'⚡', top:'58%', left:'78%', size:'1.7rem', dur:'2.5s', delay:'1.4s', op:0.75 },
-        { e:'🔥', top:'72%', left:'6%',  size:'2.1rem', dur:'3s',   delay:'2s',   op:0.85 },
+        { e:'🔥', top:'15%', left:'20%', size:'1.9rem', dur:'2.8s', delay:'0s',   op:0.80, anim:'emberFloat' },
+        { e:'💫', top:'22%', left:'70%', size:'1.5rem', dur:'3.5s', delay:'0.7s', op:0.70, anim:'emberFloat' },
+        { e:'⚡', top:'58%', left:'78%', size:'1.7rem', dur:'2.5s', delay:'1.4s', op:0.75, anim:'emberFloat' },
+        { e:'🔥', top:'72%', left:'6%',  size:'2.1rem', dur:'3s',   delay:'2s',   op:0.85, anim:'emberFloat' },
       ],
       praise:['הדרקון גאה בך!','אש ועוצמה!','לוחם דרקונים!','כנפיים נפרשות!','אגדי!']
     },
@@ -102,6 +102,9 @@ const Theme = (() => {
   function apply(id) {
     const t = THEMES[id] || THEMES.dino;
     localStorage.setItem(STORE, id);
+    // Set .t-{theme} on body so CSS mascot/particle selectors work
+    document.body.className = document.body.className.replace(/\bt-\w+/g, '').trim();
+    document.body.classList.add('t-' + (THEMES[id] ? id : 'dino'));
     const r = document.documentElement.style;
     r.setProperty('--bg', t.bg);
     if (t.dark) {
