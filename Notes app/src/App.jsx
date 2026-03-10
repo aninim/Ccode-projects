@@ -4,15 +4,22 @@
 import { useState } from 'react'
 import CaptureForm from './capture/CaptureForm'
 import FeedView from './views/FeedView'
+import EODView from './views/EODView'
 
 export default function App() {
-  const [view, setView] = useState('capture') // capture | feed | team | project | triage
+  const [view, setView] = useState('capture')
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  const handleNoteSaved = () => {
+    setRefreshKey(k => k + 1)
+    setView('feed')
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Nav */}
       <nav className="bg-white border-b border-gray-200 px-6 py-3 flex gap-4">
-        {['capture', 'feed', 'team', 'project', 'triage'].map(v => (
+        {['capture', 'feed', 'eod', 'team', 'project', 'triage'].map(v => (
           <button
             key={v}
             onClick={() => setView(v)}
@@ -25,8 +32,9 @@ export default function App() {
 
       {/* Views */}
       <main className="p-6">
-        {view === 'capture' && <CaptureForm />}
-        {view === 'feed' && <FeedView />}
+        {view === 'capture' && <CaptureForm onNoteSaved={handleNoteSaved} />}
+        {view === 'feed' && <FeedView refreshKey={refreshKey} />}
+        {view === 'eod' && <EODView onNoteSaved={handleNoteSaved} />}
         {/* Phase 3: TeamView, ProjectView, TriageView */}
       </main>
     </div>

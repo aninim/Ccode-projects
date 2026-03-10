@@ -47,7 +47,7 @@ function NoteCard({ note }) {
   )
 }
 
-export default function FeedView() {
+export default function FeedView({ refreshKey = 0 }) {
   const [notes, setNotes] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -55,6 +55,7 @@ export default function FeedView() {
   const [filters, setFilters] = useState({ person: '', project: '', priority: '' })
 
   useEffect(() => {
+    setLoading(true)
     loadNotes()
       .then(loaded => {
         // newest first
@@ -63,7 +64,7 @@ export default function FeedView() {
       })
       .catch(() => setError('Could not load notes — is the Electron app running?'))
       .finally(() => setLoading(false))
-  }, [])
+  }, [refreshKey])
 
   const visible = searchNotes(notes, query, {
     person: filters.person || undefined,

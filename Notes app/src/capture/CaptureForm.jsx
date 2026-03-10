@@ -21,7 +21,7 @@ const EMPTY_FORM = {
   actions: []
 }
 
-export default function CaptureForm() {
+export default function CaptureForm({ onNoteSaved }) {
   const [form, setForm] = useState(EMPTY_FORM)
   const [status, setStatus] = useState(null) // null | 'saving' | 'saved' | 'error'
   const [errors, setErrors] = useState({})
@@ -64,7 +64,7 @@ export default function CaptureForm() {
 
       setForm(EMPTY_FORM)
       setStatus('saved')
-      setTimeout(() => setStatus(null), 2500)
+      setTimeout(() => { setStatus(null); onNoteSaved?.() }, 1200)
     } catch (err) {
       console.error('Save error:', err)
       setStatus('error')
