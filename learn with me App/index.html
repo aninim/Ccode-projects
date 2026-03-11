@@ -635,7 +635,6 @@
     <div class="ob-age-grid">
       <button class="ob-age-btn" onclick="Onboard.setAge(0)"><span class="ob-emoji">🐣</span><span class="ob-age-label">3–4</span></button>
       <button class="ob-age-btn" onclick="Onboard.setAge(1)"><span class="ob-emoji">⭐</span><span class="ob-age-label">5–6</span></button>
-      <button class="ob-age-btn" onclick="Onboard.setAge(2)"><span class="ob-emoji">🚀</span><span class="ob-age-label">7–8</span></button>
     </div>
   </div>
 
@@ -666,7 +665,6 @@
     <div class="home-age-row" id="home-age-row">
       <button class="age-pill" data-age="0" onclick="App.setAge(0)">🐣 3–4</button>
       <button class="age-pill" data-age="1" onclick="App.setAge(1)">⭐ 5–6</button>
-      <button class="age-pill" data-age="2" onclick="App.setAge(2)">🚀 7–8</button>
     </div>
 
     <div class="home-title" data-i18n="appName">למד איתי 🎓</div>
@@ -973,7 +971,7 @@ const Onboard = (() => {
 
   function setAge(tier) {
     localStorage.setItem('ylmd_age', String(tier));
-    if (typeof Speech !== 'undefined') Speech.speak(['קטן!', 'מדהים!', 'גדול!'][tier]);
+    if (typeof Speech !== 'undefined') Speech.speak(['קטן!', 'מדהים!'][tier]);
     _buildThemeGrid();
     _transition('ob-step-age', 'ob-step-theme');
   }
@@ -1058,7 +1056,7 @@ const App = (() => {
   function setAge(tier) {
     localStorage.setItem('ylmd_age', String(tier));
     _syncAgePills();
-    if (typeof Speech !== 'undefined') Speech.speak(['קטן!', 'מדהים!', 'גדול!'][tier]);
+    if (typeof Speech !== 'undefined') Speech.speak(['קטן!', 'מדהים!'][tier]);
   }
 
   function _syncAgePills() {

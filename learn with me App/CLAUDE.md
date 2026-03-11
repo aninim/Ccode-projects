@@ -9,8 +9,8 @@
 
 **Name:** Learn With Me
 **Owner:** Oren Elimelech — Father of 3, Petach Tikva, Israel
-**Status:** v0.9 — Phases 1–3 + Bonus + Memory Match + Voice Game complete. Home redesign, theme engine, progress engine, tracing improvements done.
-**Goal:** A free, offline-capable Hebrew early education app for ages 3–8. Replaces cheap commercial toys (WinFun et al.) with adaptive, AI-powered, touch/camera/gamepad-native learning. Shareable as a single HTML file or hosted on GitHub Pages.
+**Status:** v0.9 stable — Phases 1–3 + Bonus + Memory Match + Voice Game + Phase 13 (Immersive Worlds) complete. BUG-01, BUG-02, AUDIO-01 resolved. All engine/module JS files recovered and in git.
+**Goal:** A free, offline-capable Hebrew early education app for ages 3–6. Replaces cheap commercial toys (WinFun et al.) with adaptive, AI-powered, touch/camera/gamepad-native learning. Shareable as a single HTML file or hosted on GitHub Pages.
 
 ---
 
@@ -85,6 +85,7 @@
 | **7 — English Toggle** | Runtime toggle wired, dir switches RTL↔LTR, all hardcoded strings moved to i18n | ✅ Done |
 | **8 — Distribution** | manifest.json + sw.js exist, GitHub Pages not set up | ⚠️ Partial |
 | **9 — Memory Match + Voice Game** | 2 new modules, home redesign, theme/progress engine, tracing improvements | ✅ Done |
+| **13 — Immersive Worlds** | Sky gradients, theme mascot animations, particle behaviors, glow/depth | ✅ Done (2026-03-10) |
 | **10 — Child Profiles** | profiles.json sidecar + GDrive sync, Profile Selector screen | 🔲 Next |
 
 ---
@@ -165,7 +166,7 @@ Each entry: `{ num, word (Hebrew), emoji }`
 Age-tiered arithmetic, 3 tiers based on onboarding age selection:
 - **Tier 0 (3–4):** Counting emoji objects 1–5
 - **Tier 1 (5–6):** Addition, sums ≤ 10
-- **Tier 2 (7–8):** Addition + subtraction, values ≤ 20
+- **Tier 2 (5–6, advanced):** Addition + subtraction, values ≤ 20 *(activated after several journey completions)*
 
 Questions generated dynamically with nearby wrong answers (not random distractors).
 
@@ -408,9 +409,12 @@ Oren is a father of 3 boys, based in Petach Tikva. Background in Product Managem
 | Mar 2026 | v0.8: Claude API hints, 7 themes, onboarding flow, PWA shell, i18n complete |
 | Mar 2026 | v0.8.1: English toggle wired (toggleLang + dir switch), i18n gaps fixed (journeyMsgs, traceJourneyMsgs, listenAndFind, settings), input.js stuck-draw fixed (touchcancel + document mouseup), SPEC_TEMPLATE.md added |
 | Mar 2026 | v0.9: Memory Match + Voice Game modules added. Home redesign: age pills, stat chips, themed bg, mod-dot completion indicators. Theme engine: per-theme praise. Progress engine: streak/sessions/moduleCompletions. Tracing: phase pills + nikud toggle + letter chip strip. All 9 modules track journey completions. |
-| TBD | v1.0: MediaPipe Hands — finger counting + gesture control |
-| TBD | v1.0: Full offline caching, GitHub Pages |
+| 2026-03-10 | Phase 13: Immersive Worlds complete — GAP-03–06 resolved. BUG-01, BUG-02, AUDIO-01 fixed. |
+| 2026-03-11 | All 9 missing engine/module JS files recovered (speech.js, input.js, adaptive.js, claude.js, numbers.js, shapes.js, colors.js, math.js, engineering.js). Merge conflicts resolved. 7–8 age pill removed. App moving to standalone repo. |
+| TBD | v1.0: Child Profiles (Phase 10) |
+| TBD | v1.1: MediaPipe Hands — finger counting + gesture control |
+| TBD | v1.2: Full offline caching, GitHub Pages |
 
 ---
 
-*Last updated: March 2026 | Ops: PLANNING.md | Design ref: PDD.md*
+*Last updated: 2026-03-11 | Ops: PLANNING.md | Design ref: LearnWithMe_PDD_v1_8.md*

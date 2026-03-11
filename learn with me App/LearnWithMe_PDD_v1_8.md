@@ -1,5 +1,5 @@
 # Learn With Me — למד איתי
-## Product Design Document · v1.8
+## Product Design Document · v1.9
 
 | Field | Value |
 |---|---|
@@ -7,10 +7,10 @@
 | Platform | Single HTML file / PWA — runs offline, no server |
 | Target Learner | Israeli children ages 3–6 (two active bands: 3–4 and 5–6) |
 | Language | Hebrew-first (RTL), English toggle |
-| Status | v0.9 built · Phase 10 (Child Profiles) next |
+| Status | v0.9 stable · Phase 13 (Immersive Worlds) complete · Phase 10 (Child Profiles) next |
 | Doc Purpose | Living design reference for Codi. Read before every session. Update after every session. |
 
-> **v1.8 changes:** All gaps, bugs, UX issues, wireframe gaps, and user feedback consolidated into a single §9 (Open Issues & Gaps). Inline ⚠/🐛 callouts in §4 remain as quick flags; full detail lives in §9. Sections renumbered accordingly.
+> **v1.9 changes (2026-03-11):** Phase 13 Immersive Worlds complete (GAP-03–06 all fixed). BUG-01, BUG-02, AUDIO-01 all resolved. All 9 missing engine/module JS files recovered (were never in git). 7–8 age option removed from onboarding + home screen (Locked Decision #12 enforced). App separated into its own standalone repository.
 
 ---
 
@@ -596,7 +596,7 @@ const response = await fetch("https://api.anthropic.com/v1/messages", {
 | 10 — Child Profiles | Multi-child profiles, GDrive sync via profiles.json, welcome-back UX | ⏳ Next |
 | 11 — PWA / Distribution | Service worker registered. GitHub Pages not configured. | ⚠️ Partial |
 | 12 — CV (MediaPipe) | Finger counting for math, mood detection, gesture vocab | ⏳ Later |
-| 13 — Immersive Worlds | Sky gradients, theme mascot + particle animations, glow/depth polish | ⏳ In design |
+| 13 — Immersive Worlds | Sky gradients, theme mascot + particle animations, glow/depth polish | ✅ Done (2026-03-10) |
 | 14 — Spaced Repetition | Full ALS: hesitation tracking, SM2-style scheduling | ⏳ Later |
 | 15 — PBE + Story Architect | Camera treasure hunt + Socratic AI companion (Screens 13–14) | ⏳ Later |
 
@@ -648,21 +648,21 @@ On tablets and landscape orientation the card grid does not expand. Tiles are th
 
 Correct spec: responsive grid (2→3→4 cols based on viewport width). Tile size scales up proportionally. Theme-aware card content where possible (ocean → sea creatures, space → planets).
 
-### GAP-03 · Sky gradient not applied to home background `[Theme System]`
+### ~~GAP-03 · Sky gradient not applied to home background~~ ✅ Fixed (2026-03-10)
 
-`theme.js` defines a 5-stop sky gradient per theme but `#home-world-bg` renders as a flat solid color. Fix: apply sky gradient CSS from `theme.js` to `#home-world-bg`. Part of Phase 13.
+Sky gradient from `theme.js` is now applied to `#home-world-bg` per theme.
 
-### GAP-04 · Mascot animation not theme-specific
+### ~~GAP-04 · Mascot animation not theme-specific~~ ✅ Fixed (2026-03-10)
 
-All themes use the same generic bob animation. Fix: add 6 unique `@keyframes` per theme (dino hops, owl sways, etc). Part of Phase 13.
+6 unique `@keyframes` added: dino hops, volcano shakes, ocean sways, space rotates/floats, forest owl bobs, dragon pounces. Applied via `.t-{theme} .world-mascot`.
 
-### GAP-05 · Particle behavior not theme-specific
+### ~~GAP-05 · Particle behavior not theme-specific~~ ✅ Fixed (2026-03-10)
 
-All themes share `particleFloat`. Fix: add 5 unique particle animation types (bubbles for ocean, sparks for volcano, stars for space, etc). Part of Phase 13.
+5 unique particle keyframes: `cloudDrift`, `emberFloat`, `starTwinkle`, `fishSwim`, `firefly`. Assigned per particle via `anim` property in `theme.js` + `--p-anim` CSS var.
 
-### GAP-06 · Glow/depth effects missing on dark themes
+### ~~GAP-06 · Glow/depth effects missing on dark themes~~ ✅ Fixed (2026-03-10)
 
-Volcano and dragon themes are dark and should have drop-shadow + brightness-pulse. Currently minimal shadow only. Fix: add glow/depth effects on dark themes + environment parallax layer (sky → env → mascot → particles → UI). Part of Phase 13.
+`mascotGlow` brightness-pulse on volcano + dragon. Drop-shadows on space/ocean/forest mascots. Ground strip uses theme `ground` color.
 
 ---
 
@@ -842,5 +842,5 @@ Single HTML file, no server, no login. Solution: `profiles.json` sidecar file in
 
 ---
 
-*PDD v1.8 · March 2026 · Last updated: 2026-03-10*  
+*PDD v1.9 · March 2026 · Last updated: 2026-03-11*
 *Wireframes: `wireframes-v3-learn-with-me.html` · Prototype: `index.html` (v0.9)*
