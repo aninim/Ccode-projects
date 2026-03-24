@@ -69,7 +69,7 @@ ai-digest/
 | `.env` | ✅ Created — add real key, never commit |
 | `.gitignore` | ✅ Done — `.env`, `venv/`, `__pycache__/` |
 | GitHub secret | ⏳ Pending |
-| Local test | ⏳ In progress |
+| Local test | ✅ Done — first run 2026-03-24, data.json + history snapshot confirmed |
 | DNS / GitHub Pages | ⏳ Later |
 
 ---
